@@ -10,6 +10,7 @@ export const Container = styled.div<ContainerProps>`
     border: 2px solid rgba(0, 0, 0, 0.08);
     border-radius: 8px;
     font-size: 14px;
+    padding-bottom: 6px;
 
     display: flex;
     align-items: center;
@@ -51,7 +52,8 @@ export const Container = styled.div<ContainerProps>`
     border-radius: 8px;
     letter-spacing: 0.15px;
     color: var(--semi-gray);
-    } 
+    background: transparent;
+  } 
 
   .inputNotFieldset {
     display: flex;
