@@ -51,16 +51,16 @@ export const Content = styled.div`
         justify-content: center;
         gap: 6px;
 
-        label {
+        p {
           font-size: 12px;
           letter-spacing: 0.4px;
           text-align: left;
         }
 
-        div {
+        /* div {
           width: 18px;
           height: 18px;
-        }
+        } */
       }
 
       button {

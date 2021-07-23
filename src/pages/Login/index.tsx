@@ -7,6 +7,7 @@ import {
 } from './styles';
 
 import logoAnimated from '../../assets/images/logoAnimated.gif';
+import { LabelInput } from '../../styles/global';
 
 export function Login() {
 
@@ -23,8 +24,11 @@ export function Login() {
           <Input name="password" isPassword placeholder="Senha" legendText="Senha" type="password"/>
           <footer>
             <div>
-              <Input name="toRemember" isFieldset={false} type="checkbox"/>
-              <label>Lembrar dados</label>
+              <LabelInput>
+                <input name="toRemember" type="checkbox"/>
+                <p className="checkmark"></p>
+              </LabelInput>
+              <p>Lembrar dados</p>
             </div>
             <button type="submit">Entrar</button>
           </footer>
