@@ -1,7 +1,7 @@
 import { Form } from '@unform/web';
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 
-import { AiOutlinePlus } from 'react-icons/ai';
+import { AiOutlineClose, AiOutlinePlus } from 'react-icons/ai';
 import { BsArrowLeftShort, BsTrashFill } from 'react-icons/bs';
 import {FaEllipsisV} from 'react-icons/fa';
 import {IoMdClose} from 'react-icons/io';
@@ -9,6 +9,7 @@ import {IoMdClose} from 'react-icons/io';
 import { Button } from '../../components/Button';
 import { Header } from '../../components/Header';
 import { Input } from '../../components/Input';
+import { Modal } from '../../components/Modal';
 
 import { LabelInput } from '../../styles/global';
 
@@ -17,11 +18,18 @@ import {
   Content,
   Categories,
   Category,
+  PasswordModal,
 } from './styles';
 
 export function GeneralSettings() {
 
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+
   const handleUpdateSettings = useCallback((data) => {
+    console.log(data);
+  }, []);
+
+  const handleUpdatePassword = useCallback((data) => {
     console.log(data);
   }, []);
 
@@ -29,7 +37,7 @@ export function GeneralSettings() {
     <Container>
       <Header />
       <Content>
-      <Form onSubmit={handleUpdateSettings}>
+        <Form onSubmit={handleUpdateSettings}>
         <main>
           <header>
             <BsArrowLeftShort />
@@ -38,7 +46,8 @@ export function GeneralSettings() {
           <div>
               <section>
                 <Input name="email" value="tiaguin180@gmail.com" disabled isFieldset legendText="Email" type="email"/>
-                <Button>MUDAR SENHA</Button>
+                <button type="button" onClick={() => setModalIsOpen(true)}>MUDAR SENHA</button>
+                
                 <Input name="brandName" isFieldset legendText="Nome da marca" type="text"/>
                 <fieldset className="fieldsetProduction">
                   <legend>Produção</legend>
@@ -49,7 +58,7 @@ export function GeneralSettings() {
           <section>
               <header>
                 <h1>Lista de categorias</h1>
-                <Button><AiOutlinePlus /> NOVA</Button>
+                <Button type="button"><AiOutlinePlus /> NOVA</Button>
               </header>
               <Categories>
                 <header>
@@ -63,7 +72,7 @@ export function GeneralSettings() {
 
                   <div>
                     <span>Preço padrão</span>
-                    <button><BsTrashFill /></button>
+                    <button type="button"><BsTrashFill /></button>
                   </div>
                 </header>
                 <Category>
@@ -72,21 +81,41 @@ export function GeneralSettings() {
                       <input type="checkbox"/>
                       <p className="checkmark"></p>
                     </LabelInput>
-                    <span>Categoria <button><IoMdClose /></button></span>
+                    <span>Categoria <button type="button"><IoMdClose /></button></span>
                   </div>
                   <div>
                     <span className="spanPrice">R$2.000,99</span>
-                    <button><FaEllipsisV /></button>
+                    <button type="button"><FaEllipsisV /></button>
                   </div>
                 </Category>           
               </Categories>
             </section>
         </main>
         <div>
-          <Button>SALVAR</Button>
-          <button className="cancel">CANCELAR</button>
+          <Button type="submit">SALVAR</Button>
+          <button type="button" className="buttonCancel">CANCELAR</button>
         </div>
         </Form>
+        <Modal
+          isOpen={modalIsOpen}
+        >
+          <PasswordModal>
+            <header>
+              <h2>MUDAR SENHA</h2>
+              <button onClick={() => setModalIsOpen(false)}><AiOutlineClose /></button>
+            </header>
+            <Form onSubmit={handleUpdatePassword}>
+              <Input name="currentPassword" isFieldset legendText="Senha atual" type="password"/>
+              <Input name="newPassword" isFieldset legendText="Nova senha" type="password"/>
+              <Input name="repeatNewPassword" isFieldset legendText="Confirme a nova senha" type="password"/>
+
+              <footer>
+                <Button type="submit">SALVAR</Button>
+                <button className="buttonCancel">CANCELAR</button>
+              </footer>
+            </Form>
+          </PasswordModal>
+        </Modal>
       </Content>
     </Container>
   );
