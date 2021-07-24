@@ -7,6 +7,7 @@ import {FaEllipsisV} from 'react-icons/fa';
 import {IoMdClose} from 'react-icons/io';
 
 import { Button } from '../../components/Button';
+import { Header } from '../../components/Header';
 import { Input } from '../../components/Input';
 
 import { LabelInput } from '../../styles/global';
@@ -26,6 +27,7 @@ export function GeneralSettings() {
 
   return (
     <Container>
+      <Header />
       <Content>
       <Form onSubmit={handleUpdateSettings}>
         <main>
