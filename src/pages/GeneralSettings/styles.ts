@@ -6,13 +6,14 @@ export const Container = styled.div`
 
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
+  flex-direction: column;
 `;
 
 export const Content = styled.div`
   max-width: 960px;
   width: 100%;
-  margin: 0 auto;
+  margin: 64px auto;
 
   form {
 
@@ -25,6 +26,7 @@ export const Content = styled.div`
       flex-direction: column;
 
       border: 1px solid var(--white-gray);
+      border-radius: 4px;
 
       > header {
         width: 100%;
@@ -158,6 +160,7 @@ export const Content = styled.div`
         transition: all 0.2s;
         padding: 10px 20px;
         border: 1px solid transparent;
+        background: none;
 
         &:hover {
           border: 1px solid var(--pink);
