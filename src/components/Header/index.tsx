@@ -12,7 +12,7 @@ import {
   Menu,
   MenuContent,
 } from './styles';
-import { useCallback, useState } from 'react';
+import { useState } from 'react';
 
 export function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -94,10 +94,9 @@ export function Header() {
             </button>
           </section>
         </MenuContent>
-        <aside />
+        <aside onClick={() => setMenuOpen(false)} />
       </Menu>
       )}
-
     </Container>
   )
 }
