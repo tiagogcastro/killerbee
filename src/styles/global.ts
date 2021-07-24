@@ -41,6 +41,26 @@ export default createGlobalStyle`
   button {
     cursor: pointer;
   }
+
+  
+  .buttonCancel {
+    color: var(--pink);
+    letter-spacing: 1.25px ;
+    font-size: 14px;
+    line-height: 16px;
+    text-align: center;
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-weight: 600;
+    transition: all 0.2s;
+    padding: 10px 20px;
+    border: 1px solid transparent;
+    background: none;
+
+    &:hover {
+      border: 1px solid var(--pink);
+      border-radius: 99px;
+    }
+  }
 `
 
 export const LabelInput = styled.label`
