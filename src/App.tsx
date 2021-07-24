@@ -1,15 +1,15 @@
 import { BrowserRouter as Router } from 'react-router-dom';
-// import { AuthProvider } from './contexts/AuthContext';
+import { AuthProvider } from './contexts/AuthContext';
 import { Routes } from './routes';
 import GlobalStyle from './styles/global';
 
 export function App() {
   return (
     <Router>
-      {/* <AuthProvider> */}
+      <AuthProvider>
         <GlobalStyle />
         <Routes />
-      {/* </AuthProvider> */}
+      </AuthProvider>
     </Router>
   );
 }
