@@ -4,7 +4,8 @@ import { useField } from '@unform/core';
 import {AiFillEyeInvisible, AiFillEye} from 'react-icons/ai';
 
 import {
-  Container
+  Container,
+  Error
 } from './styles';
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement>  {
@@ -13,9 +14,10 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement>  {
   type: string;
   isFieldset?: boolean;
   isPassword?: boolean;
+  errorMessage?: string;
 };
 
-export const Input = ({ name,legendText, isPassword, isFieldset, type, ...rest }: InputProps) => {
+export const Input = ({ name,legendText, isPassword, isFieldset, errorMessage, type, ...rest }: InputProps) => {
   const inputRef = useRef<HTMLInputElement>(null);
 
   const [inputFocus, setInputFocus] = useState(false);
@@ -33,7 +35,7 @@ export const Input = ({ name,legendText, isPassword, isFieldset, type, ...rest }
     setIsFilled(!!inputRef.current?.value)
   }, []);
 
-  const { fieldName, registerField } = useField(name);
+  const { fieldName, registerField, error } = useField(name);
 
   useEffect(() => {
     registerField({
@@ -52,8 +54,9 @@ export const Input = ({ name,legendText, isPassword, isFieldset, type, ...rest }
   }, [fieldName, registerField]);
 
   return (
-    <Container isFilled={isFilled} inputFocus={inputFocus}>
+    <Container isError={!!error} isFilled={isFilled} inputFocus={inputFocus}>
      {isFieldset ? (
+      <>
       <fieldset>
         <legend>{legendText}</legend>
         <input
@@ -66,13 +69,18 @@ export const Input = ({ name,legendText, isPassword, isFieldset, type, ...rest }
         />
         {type === 'password' && (
           passwordVisible ? (
-            <button onClick={() => setPasswordVisible(false)}><AiFillEye /></button>
+            <button type="button" onClick={() => setPasswordVisible(false)}><AiFillEye /></button>
             ) : (
-            <button onClick={() => setPasswordVisible(true)}><AiFillEyeInvisible /></button>
+            <button type="button" onClick={() => setPasswordVisible(true)}><AiFillEyeInvisible /></button>
           )
         )}
       </fieldset>
+      {error && (
+        <Error>{error}</Error>
+      )}
+      </>
     ) : (
+      <>
       <span className={isPassword ? "inputNotFieldset" : ''}>
         <input
           name={name}
@@ -84,12 +92,16 @@ export const Input = ({ name,legendText, isPassword, isFieldset, type, ...rest }
         />
         {type === 'password' && (
           passwordVisible ? (
-            <button onClick={() => setPasswordVisible(false)}><AiFillEye /></button>
+            <button type="button" onClick={() => setPasswordVisible(false)}><AiFillEye /></button>
             ) : (
-            <button onClick={() => setPasswordVisible(true)}><AiFillEyeInvisible /></button>
+            <button type="button" onClick={() => setPasswordVisible(true)}><AiFillEyeInvisible /></button>
           )
         )}
       </span>
+      {error && (
+        <Error>{error}</Error>
+      )}
+      </>
     )}
     </Container>
   );
