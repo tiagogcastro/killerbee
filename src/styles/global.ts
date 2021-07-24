@@ -23,6 +23,8 @@ export default createGlobalStyle`
     --semi-gray: rgba(0, 0, 0, 0.87);
     --gray: rgba(0, 0, 0, 0.6);
     --white-gray: rgba(0, 0, 0, 0.12);
+
+    --white-opacity: rgba(255, 255, 255, 0.74);
   }
   #root {
     width: 100%;
@@ -32,6 +34,8 @@ export default createGlobalStyle`
     background: var(--semi-white);
     width: 100%;
     height: 100vh;
+
+    position: relative;
   }
 
   button {
