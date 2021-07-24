@@ -71,23 +71,22 @@ export const Container = styled.div<ContainerProps>`
     ${props => props.isFilled && css`
       border: 1px solid var(--purple);
     `}
+  }
 
+  button {
+    margin-right: 8px;
+    background: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
-    button {
-      margin-right: 8px;
-      background: none;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-
-      svg {
-        width: 24px;
-        height: 24px;
-      
-        path {
-          color: var(--semi-gray);
-        }
+    svg {
+      width: 24px;
+      height: 24px;
+    
+      path {
+        color: var(--semi-gray);
       }
     }
   }
