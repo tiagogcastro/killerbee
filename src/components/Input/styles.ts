@@ -2,7 +2,8 @@ import styled, { css } from 'styled-components';
 
 type ContainerProps = {
   inputFocus: boolean;
-  isFilled: boolean
+  isFilled: boolean;
+  isError?: boolean;
 }
 
 export const Container = styled.div<ContainerProps>`
@@ -29,6 +30,14 @@ export const Container = styled.div<ContainerProps>`
 
       legend {
         color: var(--purple);
+      }
+    `}
+
+    ${props => props.isError && css`
+      border: 1px solid var(--pink);
+
+      legend {
+        color: var(--pink);
       }
     `}
 
@@ -71,6 +80,11 @@ export const Container = styled.div<ContainerProps>`
     ${props => props.isFilled && css`
       border: 1px solid var(--purple);
     `}
+
+    ${props => props.isError && css`
+      border: 1px solid var(--pink);
+    `}
+
   }
 
   button {
@@ -90,4 +104,11 @@ export const Container = styled.div<ContainerProps>`
       }
     }
   }
+`;
+
+export const Error = styled.span`
+  color: var(--pink);
+  display: block;
+  margin-top: 6px;
+  font-size: 12px;
 `;
