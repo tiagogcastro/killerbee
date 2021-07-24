@@ -67,7 +67,7 @@ export const Menu = styled.div`
   align-items: flex-start;
   justify-content: flex-start;
   transition: left 2s;
-
+  
   aside {
     width: 100%;
     height: 100%;
