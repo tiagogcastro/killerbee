@@ -1,26 +1,57 @@
 import { Form } from '@unform/web';
-import { useCallback } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { Input } from '../../components/Input';
 import {
   Container,
-  Content
+  Content,
+  Error
 } from './styles';
 
 import logoAnimated from '../../assets/images/logoAnimated.gif';
 import { LabelInput } from '../../styles/global';
+import { useAuth } from '../../contexts/AuthContext';
+import { AxiosError } from 'axios';
+import { FormHandles } from '@unform/core';
+
+type ErrorType = {
+  error_message: string;
+  error_status: 'C01' | 'C02';
+  status_code: number;
+}
 
 export function Login() {
+  const { signinWithEmail } = useAuth();
+  const loginFormRef = useRef<FormHandles>(null);
 
-  const handleLoginForm = useCallback((data) => {
-    console.log(data);
+  const handleLoginForm = useCallback(async (data) => {
+    loginFormRef.current?.setErrors({})
+    signinWithEmail(data).then(response => {
+    }).catch((error: AxiosError) => {
+      const errorType = {
+        C01: 'username',
+        C02: 'password',
+        default: 'Erro não esperado'
+      };
+
+      const errorData: ErrorType | undefined = error.response?.data
+
+      if(errorData) {
+        loginFormRef.current?.setFieldError(errorType[(errorData).error_status] || errorType.default , (errorData).error_message);
+      }
+    });
   }, []);
 
   return (
     <Container>
       <Content>
         <img src={logoAnimated} alt="Gif animado" />
-        <Form onSubmit={handleLoginForm}>
-          <Input name="email" isFieldset legendText="Email" type="email"/>
+        <Form ref={loginFormRef} onSubmit={handleLoginForm}>
+          <Input 
+            name="username" 
+            isFieldset 
+            legendText="Email" 
+            type="email"
+          />
           <Input name="password" isPassword placeholder="Senha" legendText="Senha" type="password"/>
           <footer>
             <div>
