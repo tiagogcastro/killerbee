@@ -69,6 +69,22 @@ export const Content = styled.div`
 
           button {
             padding: 16px 20px;
+            background: var(--purple);
+            color: var(--full-white);
+            text-align: center;
+            font-size: 14px;
+            line-height: 16px;
+            letter-spacing: 2px;
+            max-width: 200px;
+            font-weight: 600;
+            border-radius: 99px;
+            transition: filter 0.2s;
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+
+            &:hover {
+              filter: brightness(90%);
+            }
           }
 
           .fieldsetProduction {
@@ -148,25 +164,6 @@ export const Content = styled.div`
       justify-content: center;
       gap: 16px;
       margin-top: 32px;
-
-      .cancel {
-        color: var(--pink);
-        letter-spacing: 1.25px ;
-        font-size: 14px;
-        line-height: 16px;
-        text-align: center;
-        font-family: 'IBM Plex Sans', sans-serif;
-        font-weight: 600;
-        transition: all 0.2s;
-        padding: 10px 20px;
-        border: 1px solid transparent;
-        background: none;
-
-        &:hover {
-          border: 1px solid var(--pink);
-          border-radius: 99px;
-        }
-      }
     }
   }
 `;
@@ -315,6 +312,78 @@ export const Category = styled.div`
           color: var(--purple-glass);
         }
       }
+    }
+  }
+`;
+
+export const PasswordModal = styled.div`
+  background: var(--full-white);
+
+  max-width: 380px;
+  width: 100%;
+
+  border-radius: 8px;
+
+  box-shadow: 0 8px 10px 0 rgba(0, 0, 0, 0.2), 0 6px 30px 0 rgba(0, 0, 0, 0.12), 0 16px 24px 0 rgba(0, 0, 0, 0.14);
+
+  header {
+    background: var(--purple);
+    border-radius: 8px 8px 0 0;
+    padding: 20px 16px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    h2 {
+      font-size: 14px;
+      font-weight: 600;
+      font-family: 'IBM Plex Sans', sans-serif;
+      letter-spacing: 1.25px;
+      color: var(--full-white);
+    }
+
+    button {
+      background: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      svg {
+        color: var(--full-white);
+        width: 18px;
+        height: 18px;
+      }
+    }
+  }
+
+  form {
+    width: 100%;
+    padding: 0 40px;
+
+    > div {
+      width: 100%;
+
+      fieldset {
+        width: 100%;
+
+        button {
+          svg {
+            path {
+              color: rgba(0, 0, 0, 0.6);
+            }
+          }
+        }
+      }
+    }
+
+    footer {
+      width: 100%;
+      padding: 30px 20px 40px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
     }
   }
 `;
