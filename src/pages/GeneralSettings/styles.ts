@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 export const Container = styled.div`
   width: 100%;
@@ -87,6 +87,33 @@ export const Content = styled.div`
             }
           }
 
+          > fieldset {
+            border: 2px solid rgba(0, 0, 0, 0.08);
+            border-radius: 8px;
+            font-size: 14px;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+                    
+            legend {
+              margin: 0 8px 0 12px;
+              padding: 0 8px;
+            }
+
+            span {
+              width: 100%;
+              padding: 0 16px 0 18px;
+              font-size: 1rem;
+              line-height: 2.4rem;
+              text-align: left;
+              border-radius: 8px;
+              letter-spacing: 0.15px;
+              color: var(--semi-gray);
+              background: transparent;
+            }
+          }
+
           .fieldsetProduction {
             border: 2px solid rgba(0, 0, 0, 0.08);
             border-radius: 8px;
@@ -96,8 +123,23 @@ export const Content = styled.div`
             align-items: center;
             justify-content: space-between;
 
+            > div {
+              width: 100%;
+              padding: 0 12px;
+
+              .css-1okebmr-indicatorSeparator {
+                background: none;
+              }
+
+              
+            }
+            div {
+              border: none;
+              box-shadow: none;
+            }
+
             legend {
-              margin: 0 8px 0 20px;
+              margin: 0 8px 0 12px;
               padding: 0 8px;
             }
 
@@ -385,5 +427,24 @@ export const PasswordModal = styled.div`
       justify-content: center;
       gap: 8px;
     }
+  }
+`;
+
+type ErrorProps = {
+  noPadding?: boolean;
+};
+
+export const Error = styled.aside<ErrorProps>`
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 0 0 0 32px;
+  
+  ${props => props.noPadding && css`
+    padding: 0;
+  `}
+
+  p {
+    color: var(--pink);
   }
 `;
