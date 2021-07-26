@@ -13,8 +13,11 @@ import {
   MenuContent,
 } from './styles';
 import { useState } from 'react';
+import { useAuth } from '../../contexts/AuthContext';
 
 export function Header() {
+  const { signOut } = useAuth();
+  
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
@@ -41,7 +44,7 @@ export function Header() {
           <button>
             <AiFillSetting />
           </button>
-          <button>
+          <button onClick={signOut}>
             <BsBoxArrowInRight />
           </button>
         </div>
@@ -86,7 +89,7 @@ export function Header() {
                 Configurações
               </span>
             </Link>
-            <button>
+            <button onClick={signOut}>
               <span>
                 <BsBoxArrowInRight />
                 Sair da conta
