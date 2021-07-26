@@ -3,24 +3,26 @@ import { createContext, ReactNode, useCallback, useContext, useEffect, useState 
 import { useHistory } from 'react-router-dom';
 import { api } from '../../services/api';
 
-interface AuthState {
+type AuthState = {
   token: string;
-}
+};
 
 type signinWithEmailCredentials = {
   username: string;
   password: string;
-}
+};
 
 type AuthContextData = {
   signinWithEmail(credentials: signinWithEmailCredentials): Promise<void>;
-}
+  token: string;
+  signOut(): void;
+};
 
 const AuthContext = createContext<AuthContextData>({} as AuthContextData);
 
 type AuthProviderProps = {
   children: ReactNode;
-}
+};
 
 export function AuthProvider({children}: AuthProviderProps) {
   const history = useHistory();
@@ -33,7 +35,7 @@ export function AuthProvider({children}: AuthProviderProps) {
       return {
         token,
       };
-    }
+    };
 
     return {} as AuthState;
   }); 
@@ -50,22 +52,37 @@ export function AuthProvider({children}: AuthProviderProps) {
     history.push('/configuracoes');
 
     setData({token});
-  }, []);
-
-  useEffect(() => {
-    api.interceptors.response.use((response) => response, async (error: AxiosError) => {
-      if(error.response?.status === 401) {
-        history.push('/');
-        return;
-      };
-    });
   }, [history]);
 
+  const signOut = useCallback(() => {
+    localStorage.removeItem('@killerbee:token');
+
+    history.push('/');
+
+    return {} as AuthState;
+  }, [history]);
+
+  useEffect(() => {
+    const token = localStorage.getItem('@killerbee:token');
+
+    if(!token) {
+      signOut();
+      return;
+    };
+
+    api.get('/user/valid').then(response => {
+      if(response.data === false) {
+        signOut();
+      };
+    });
+    
+  }, [history, signOut]);
+
   return (
-    <AuthContext.Provider value={{signinWithEmail}}>
+    <AuthContext.Provider value={{token: data.token, signinWithEmail, signOut}}>
       {children}
     </AuthContext.Provider>
-  )
+  );
 }
 
 export function useAuth(): AuthContextData {
@@ -73,7 +90,7 @@ export function useAuth(): AuthContextData {
 
   if(!context) {
     throw new Error('useAuth must be used within an AuthProvider');
-  }
+  };
 
   return context;
 };
