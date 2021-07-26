@@ -1,23 +1,26 @@
 import { Form } from '@unform/web';
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useRef } from 'react';
+import { FormHandles } from '@unform/core';
+import { AxiosError } from 'axios';
+
+import { useAuth } from '../../contexts/AuthContext';
+
+import { LabelInput } from '../../styles/global';
+
 import { Input } from '../../components/Input';
+
+import logoAnimated from '../../assets/images/logoAnimated.gif';
+
 import {
   Container,
   Content,
-  Error
 } from './styles';
 
-import logoAnimated from '../../assets/images/logoAnimated.gif';
-import { LabelInput } from '../../styles/global';
-import { useAuth } from '../../contexts/AuthContext';
-import { AxiosError } from 'axios';
-import { FormHandles } from '@unform/core';
-
-type ErrorType = {
+export type ErrorType = {
   error_message: string;
   error_status: 'C01' | 'C02';
   status_code: number;
-}
+};
 
 export function Login() {
   const { signinWithEmail } = useAuth();
