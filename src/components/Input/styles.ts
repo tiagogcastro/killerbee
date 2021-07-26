@@ -42,7 +42,7 @@ export const Container = styled.div<ContainerProps>`
     `}
 
     legend {
-      margin: 0 8px 0 20px;
+      margin: 0 8px 0 12px;
       padding: 0 8px;
     }
   
@@ -54,7 +54,7 @@ export const Container = styled.div<ContainerProps>`
 
   input {
     width: 100%;
-    padding: 0 16px 0 12px;
+    padding: 0 16px 0 18px;
     font-size: 1rem;
     line-height: 2.4rem;
     text-align: left;
