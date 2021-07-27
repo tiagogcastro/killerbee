@@ -13,10 +13,6 @@ export function RouterCustom({isPrivate, isAuthenticated, ...rest}: RouterCustom
     return <Redirect to="/"/>;
   };
 
-  if(tokenIsValid && isAuthenticated) {
-    return <Redirect to="/configuracoes"/>;
-  };
-
   return (
     <Route {...rest} />
   )
