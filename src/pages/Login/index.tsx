@@ -15,6 +15,8 @@ import {
   Container,
   Content,
 } from './styles';
+import { useEffect } from 'react';
+import { useHistory } from 'react-router-dom';
 
 export type ErrorType = {
   error_message: string;
@@ -23,8 +25,17 @@ export type ErrorType = {
 };
 
 export function Login() {
-  const { signinWithEmail } = useAuth();
+  const { signinWithEmail, tokenIsValid } = useAuth();
+  const history = useHistory();
+
   const loginFormRef = useRef<FormHandles>(null);
+
+  useEffect(() => {
+    if(tokenIsValid) {
+      history.push('/configuracoes');
+      return;
+    };
+  }, [history])
 
   const handleLoginForm = useCallback(async (data) => {
     loginFormRef.current?.setErrors({})
@@ -42,7 +53,7 @@ export function Login() {
         loginFormRef.current?.setFieldError(errorType[(errorData).error_status] || errorType.default , (errorData).error_message);
       }
     });
-  }, [signinWithEmail]);
+  }, [signinWithEmail, ]);
 
   return (
     <Container>
