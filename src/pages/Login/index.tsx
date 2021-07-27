@@ -42,7 +42,7 @@ export function Login() {
         loginFormRef.current?.setFieldError(errorType[(errorData).error_status] || errorType.default , (errorData).error_message);
       }
     });
-  }, []);
+  }, [signinWithEmail]);
 
   return (
     <Container>
