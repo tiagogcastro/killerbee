@@ -12,7 +12,7 @@ interface Props extends SelectProps<OptionTypeBase> {
 }
 export function Select({ name, options, ...rest }: Props) {
   const selectRef = useRef(null);
-  const { fieldName, registerField } = useField(name);
+  const { fieldName, registerField, defaultValue, } = useField(name);
   useEffect(() => {
     registerField({
       name: fieldName,
@@ -34,6 +34,7 @@ export function Select({ name, options, ...rest }: Props) {
   return (
     <ReactSelect
       placeholder="Selecione..."
+      defaultValue={defaultValue}
       ref={selectRef}
       {...rest}
       options={options}
