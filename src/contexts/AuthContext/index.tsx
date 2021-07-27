@@ -53,16 +53,15 @@ export function AuthProvider({children}: AuthProviderProps) {
 
     localStorage.setItem('@killerbee:token', token);
 
-    history.push('/configuracoes');
-
     setData({token, tokenIsValid});
-  }, [history, tokenIsValid]);
+  }, [tokenIsValid]);
 
   const signOut = useCallback(() => {
     localStorage.removeItem('@killerbee:token');
 
     history.push('/');
 
+    setData({} as AuthState);
     return {} as AuthState;
   }, [history]);
 
