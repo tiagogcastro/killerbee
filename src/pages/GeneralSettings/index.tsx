@@ -50,6 +50,7 @@ export type ErrorType = {
 
 export function GeneralSettings() {
   const changeFormPasswordRef = useRef<FormHandles>(null);
+
   const [modalIsOpen, setModalIsOpen] = useState(false);
 
   const [userConfiguration, setUserConfiguration] = useState<UserConfiguration>({} as UserConfiguration);
