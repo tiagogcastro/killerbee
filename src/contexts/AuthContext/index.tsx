@@ -1,10 +1,10 @@
-import { AxiosError } from 'axios';
 import { createContext, ReactNode, useCallback, useContext, useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { api } from '../../services/api';
 
 type AuthState = {
   token: string;
+  tokenIsValid: boolean;
 };
 
 type signinWithEmailCredentials = {
@@ -16,6 +16,7 @@ type AuthContextData = {
   signinWithEmail(credentials: signinWithEmailCredentials): Promise<void>;
   token: string;
   signOut(): void;
+  tokenIsValid: boolean;
 };
 
 const AuthContext = createContext<AuthContextData>({} as AuthContextData);
@@ -27,6 +28,8 @@ type AuthProviderProps = {
 export function AuthProvider({children}: AuthProviderProps) {
   const history = useHistory();
 
+  const [tokenIsValid, setTokenIsValid] = useState(true);
+
   const [data, setData] = useState<AuthState>(() => {
     const token = localStorage.getItem('@killerbee:token');
 
@@ -34,6 +37,7 @@ export function AuthProvider({children}: AuthProviderProps) {
       api.defaults.headers.authorization = `Bearer ${token}`;
       return {
         token,
+        tokenIsValid
       };
     };
 
@@ -51,8 +55,8 @@ export function AuthProvider({children}: AuthProviderProps) {
 
     history.push('/configuracoes');
 
-    setData({token});
-  }, [history]);
+    setData({token, tokenIsValid});
+  }, [history, tokenIsValid]);
 
   const signOut = useCallback(() => {
     localStorage.removeItem('@killerbee:token');
@@ -71,6 +75,7 @@ export function AuthProvider({children}: AuthProviderProps) {
     };
 
     api.get('/user/valid').then(response => {
+      setTokenIsValid(response.data);
       if(response.data === false) {
         signOut();
       };
@@ -79,7 +84,7 @@ export function AuthProvider({children}: AuthProviderProps) {
   }, [history, signOut]);
 
   return (
-    <AuthContext.Provider value={{token: data.token, signinWithEmail, signOut}}>
+    <AuthContext.Provider value={{token: data.token, tokenIsValid: data.tokenIsValid, signinWithEmail, signOut}}>
       {children}
     </AuthContext.Provider>
   );
