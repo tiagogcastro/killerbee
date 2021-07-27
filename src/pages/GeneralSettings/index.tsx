@@ -77,6 +77,7 @@ export function GeneralSettings() {
     api.get('/main/productionType').then(response => {
       setProductionType(response.data);
     }).catch((error: AxiosError) => {
+      setError(error.response?.data.error);
     });
   }, []);
 
@@ -85,14 +86,12 @@ export function GeneralSettings() {
     const dataCustom = {
       ...data,
       categories_settings: userConfiguration.categories_settings,
-    }
+    };
     
     api.post('/configuration', dataCustom).then(response => {
-    setUpdateSettingsLoader(false);
-    setError('');
+      setError('');
       setUserConfiguration(response.data);
     }).catch((error: AxiosError) => {
-      setUpdateSettingsLoader(false);
       if(error.response?.status === 500) {
         setError(error.response.data.error);
         return;
@@ -102,6 +101,8 @@ export function GeneralSettings() {
         setError('Tipo de produção não informado');
         return;
       };
+    }).finally(() =>{
+      setUpdateSettingsLoader(false);
     });
   }, [userConfiguration.categories_settings]);
 
@@ -164,7 +165,7 @@ export function GeneralSettings() {
               <Input name="brand_name" defaultValue={userConfiguration.brand_name} isFieldset legendText="Nome da marca" type="text"/>
               <fieldset className="fieldsetProduction">
                 <legend>Produção</legend>
-                <Select name="production_type" options={productionTypeOptions}/>
+                <Select name="production_type" defaultValue={{value: 1, label:'Própria'}}  options={productionTypeOptions}/>
               </fieldset>
             </section>
           </div>
