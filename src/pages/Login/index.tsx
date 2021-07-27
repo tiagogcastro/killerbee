@@ -30,16 +30,10 @@ export function Login() {
 
   const loginFormRef = useRef<FormHandles>(null);
 
-  useEffect(() => {
-    if(tokenIsValid) {
-      history.push('/configuracoes');
-      return;
-    };
-  }, [history])
-
   const handleLoginForm = useCallback(async (data) => {
     loginFormRef.current?.setErrors({})
     signinWithEmail(data).then(response => {
+      history.push('/configuracoes');
     }).catch((error: AxiosError) => {
       const errorType = {
         C01: 'username',
@@ -53,7 +47,14 @@ export function Login() {
         loginFormRef.current?.setFieldError(errorType[(errorData).error_status] || errorType.default , (errorData).error_message);
       }
     });
-  }, [signinWithEmail, ]);
+  }, [signinWithEmail, history]);
+
+  useEffect(() => {
+    if(tokenIsValid) {
+      history.push('/configuracoes');
+      return;
+    };
+  }, [history, tokenIsValid])
 
   return (
     <Container>
