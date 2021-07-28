@@ -29,7 +29,10 @@ import {
 type UserConfiguration = {
   username: string;
   brand_name: string;
-  production_type: number;
+  production_type: {
+    id: number;
+    description: string;
+  };
   categories_settings: {
     category_id: number;
     category_description: string;
@@ -70,6 +73,7 @@ export function GeneralSettings() {
       if(error) {
         setUserConfiguration({}  as UserConfiguration);
         api.get('/user/me').then((response) => {
+          console.log(response.data);
           setUserConfiguration(response.data);
         });
       };
@@ -86,9 +90,12 @@ export function GeneralSettings() {
     setUpdateSettingsLoader(true);
     const dataCustom = {
       ...data,
-      categories_settings: userConfiguration.categories_settings,
+      production_type: {
+        id: data.production_type,
+      },
+      categories_settings: !userConfiguration.categories_settings ? [] : userConfiguration.categories_settings,
     };
-    
+
     api.post('/configuration', dataCustom).then(response => {
       setError('');
       setUserConfiguration(response.data);
@@ -166,7 +173,20 @@ export function GeneralSettings() {
               <Input name="brand_name" defaultValue={userConfiguration.brand_name} isFieldset legendText="Nome da marca" type="text"/>
               <fieldset className="fieldsetProduction">
                 <legend>Produção</legend>
-                <Select name="production_type" defaultValue={{value: 1, label:'Própria'}}  options={productionTypeOptions}/>
+                {!userConfiguration.production_type ? (
+                  <>
+                  <Select name="production_type"
+                    options={productionTypeOptions}
+                  />
+                  </>
+                ): (
+                  <Select name="production_type"
+                    defaultValue={{
+                      value: userConfiguration.production_type.id, label: userConfiguration.production_type.description
+                    }}
+                    options={productionTypeOptions}
+                  />
+                )}
               </fieldset>
             </section>
           </div>
