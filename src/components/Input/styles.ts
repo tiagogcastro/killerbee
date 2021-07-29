@@ -2,7 +2,6 @@ import styled, { css } from 'styled-components';
 
 type ContainerProps = {
   inputFocus: boolean;
-  isFilled: boolean;
   isError?: boolean;
 }
 
@@ -18,14 +17,6 @@ export const Container = styled.div<ContainerProps>`
     justify-content: space-between;
 
     ${props => props.inputFocus && css`
-      border: 1px solid var(--purple);
-
-      legend {
-        color: var(--purple);
-      }
-    `}
-
-    ${props => props.isFilled && css`
       border: 1px solid var(--purple);
 
       legend {
@@ -74,10 +65,6 @@ export const Container = styled.div<ContainerProps>`
     border: 1px solid rgba(0, 0, 0, 0.08);
 
     ${props => props.inputFocus && css`
-      border: 1px solid var(--purple);
-    `}
-
-    ${props => props.isFilled && css`
       border: 1px solid var(--purple);
     `}
 

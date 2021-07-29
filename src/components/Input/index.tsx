@@ -21,7 +21,6 @@ export const Input = ({ name,legendText, isPassword, isFieldset, errorMessage, t
   const inputRef = useRef<HTMLInputElement>(null);
 
   const [inputFocus, setInputFocus] = useState(false);
-  const [isFilled, setIsFilled] = useState(false);
   const [passwordVisible, setPasswordVisible] = useState(false);
 
   const handleInputFocus = useCallback(() => {
@@ -31,8 +30,6 @@ export const Input = ({ name,legendText, isPassword, isFieldset, errorMessage, t
   const handleInputBlur = useCallback(() => {
     setInputFocus(false)
 
-    // Se tiver vazio = false, se tiver preenchido = true
-    setIsFilled(!!inputRef.current?.value)
   }, []);
 
   const { fieldName, registerField, error } = useField(name);
@@ -54,7 +51,7 @@ export const Input = ({ name,legendText, isPassword, isFieldset, errorMessage, t
   }, [fieldName, registerField]);
 
   return (
-    <Container isError={!!error} isFilled={isFilled} inputFocus={inputFocus}>
+    <Container isError={!!error} inputFocus={inputFocus}>
      {isFieldset ? (
       <>
       <fieldset>
