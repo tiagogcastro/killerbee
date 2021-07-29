@@ -38,6 +38,12 @@ export const Content = styled.div`
       margin-bottom: 24px;
     }
 
+    .error {
+      color: var(--pink);
+      display: block;
+      font-size: 12px;
+    }
+
     footer {
       display: flex;
       align-items: center;
