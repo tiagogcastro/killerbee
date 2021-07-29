@@ -42,6 +42,10 @@ export default createGlobalStyle`
     cursor: pointer;
   }
 
+  button img.imgLoading {
+    width: 16px;
+    height: 16px;
+  }
   
   .buttonCancel {
     color: var(--pink);
