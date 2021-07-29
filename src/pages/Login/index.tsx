@@ -1,5 +1,5 @@
-import { Form } from '@unform/web';
-import { useCallback, useRef } from 'react';
+import { useHistory } from 'react-router-dom';import { Form } from '@unform/web';
+import { useCallback, useRef, useEffect, useState } from 'react';
 import { FormHandles } from '@unform/core';
 import { AxiosError } from 'axios';
 
@@ -9,14 +9,13 @@ import { LabelInput } from '../../styles/global';
 
 import { Input } from '../../components/Input';
 
-import logoAnimated from '../../assets/images/logoAnimated.gif';
-
 import {
   Container,
   Content,
 } from './styles';
-import { useEffect } from 'react';
-import { useHistory } from 'react-router-dom';
+
+import logoAnimated from '../../assets/images/logoAnimated.gif';
+import LoadingGif from '.././../assets/images/loading.gif';
 
 export type ErrorType = {
   error_message: string;
@@ -27,26 +26,41 @@ export type ErrorType = {
 export function Login() {
   const { signinWithEmail, tokenIsValid } = useAuth();
   const history = useHistory();
+  const [loginLoader, setLoginLoader] = useState(false);
+  const [error, setError] = useState('');
 
   const loginFormRef = useRef<FormHandles>(null);
 
   const handleLoginForm = useCallback(async (data) => {
-    loginFormRef.current?.setErrors({})
-    signinWithEmail(data).then(response => {
-      history.push('/configuracoes');
-    }).catch((error: AxiosError) => {
-      const errorType = {
-        C01: 'username',
-        C02: 'password',
-        default: 'Erro não esperado'
-      };
+    setLoginLoader(true);
+    if(data.username.length < 1 || data.password.length < 1) {
+      setLoginLoader(false);
+      setError('Preencha os campos com pelo menos 1 caracter')
+      return;
+    } else {
+      loginFormRef.current?.setErrors({})
+      
+      signinWithEmail(data).then(response => {
+        history.push('/configuracoes');
+      }).catch((error: AxiosError) => {
+        const errorType = {
+          C01: 'username',
+          C02: 'password',
+          default: 'Erro não esperado'
+        };
 
-      const errorData: ErrorType | undefined = error.response?.data
+        const errorData: ErrorType | undefined = error.response?.data
 
-      if(errorData) {
-        loginFormRef.current?.setFieldError(errorType[(errorData).error_status] || errorType.default , (errorData).error_message);
-      }
-    });
+        if(errorData) {
+          loginFormRef.current?.setFieldError(errorType[(errorData).error_status] || errorType.default , (errorData).error_message);
+          setError('');
+        }
+      }).finally(() => {
+        setLoginLoader(false);
+        setError('');
+      });
+    }
+
   }, [signinWithEmail, history]);
 
   useEffect(() => {
@@ -68,6 +82,7 @@ export function Login() {
             type="email"
           />
           <Input name="password" isPassword placeholder="Senha" legendText="Senha" type="password"/>
+          {error && <p className="error">{error}</p>}
           <footer>
             <div>
               <LabelInput>
@@ -76,7 +91,7 @@ export function Login() {
               </LabelInput>
               <p>Lembrar dados</p>
             </div>
-            <button type="submit">Entrar</button>
+            <button type="submit">{loginLoader ? <img className="imgLoading" src={LoadingGif} alt="loading" /> : 'ENTRAR'}</button>
           </footer>
         </Form>
       </Content>
