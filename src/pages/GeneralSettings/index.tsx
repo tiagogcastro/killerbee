@@ -15,6 +15,8 @@ import { Modal } from '../../components/Modal';
 import { Select } from '../../components/Select';
 import { api } from '../../services/api';
 
+import LoadingGif from '.././../assets/images/loading.gif';
+
 import { LabelInput } from '../../styles/global';
 
 import {
@@ -232,7 +234,7 @@ export function GeneralSettings() {
           </section>
         </main>
         <div>
-          <Button type="submit">{updateSettingsLoader ? 'Carregando...' : 'SALVAR'}</Button>
+          <Button type="submit">{updateSettingsLoader ? <img className="imgLoading" src={LoadingGif} alt="loading" /> : 'SALVAR'}</Button>
           <button type="button" className="buttonCancel">CANCELAR</button>
         </div>
         </Form>
@@ -250,8 +252,8 @@ export function GeneralSettings() {
               <Input name="new_password_confirm" isFieldset legendText="Confirme a nova senha" type="password"/>
               {changePassworderror && <Error noPadding><p>{changePassworderror}</p></Error> }
               <footer>
-                <Button type="submit">{changePasswordLoader ? 'Carregando...' : 'SALVAR'}</Button>
-                <button className="buttonCancel">CANCELAR</button>
+                <Button type="submit">{changePasswordLoader ? <img className="imgLoading" src={LoadingGif} alt="loading" /> : 'SALVAR'}</Button>
+                <button type="button" onClick={() => setModalIsOpen(false)} className="buttonCancel">CANCELAR</button>
               </footer>
             </Form>
           </PasswordModal>
