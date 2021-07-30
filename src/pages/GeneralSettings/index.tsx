@@ -26,7 +26,6 @@ import {
   CategoryMiniModal,
 } from './styles';
 
-import { PasswordModal } from './parts/PasswordModal';
 import { NewCategoryModal } from './parts/NewCategoryModal';
 import { DeleteCategoryModal } from './parts/DeleteCategoryModal';
 
@@ -66,11 +65,6 @@ export function GeneralSettings() {
   const [updateSettingsLoader, setUpdateSettingsLoader] = useState(false);
   const [error, setError] = useState('');
 
-  // Partial password modal
-  const [changePasswordError, setChangePassworderror] = useState('');
-  const [changePasswordLoader, setChangePasswordLoader] = useState(false);
-  const [modalPasswordIsOpen, setModalPasswordIsOpen] = useState(false);
-  
   // Partial category modal  
   const [modalNewCategoryIsOpen, setModalNewCategoryIsOpen] = useState(false);
   const [newCategoryLoader, setNewCategoryLoader] = useState(false);
@@ -110,26 +104,6 @@ export function GeneralSettings() {
       setUpdateSettingsLoader(false);
     });
   }, [userConfiguration.categories_settings]);
-
-  const handleUpdatePassword = useCallback((data) => {
-    setChangePasswordLoader(true);
-
-    if(data.new_password_confirm.length  < 8 || data.new_password.length < 8)   {
-      setChangePassworderror('Mínimo de 8 digitos para nova senha');
-      setChangePasswordLoader(false);
-      return;
-    } else {
-      api.put('/user/changePassword', data).then(response => {
-        setModalPasswordIsOpen(false);
-        setChangePassworderror('');
-      }).catch((error: AxiosError) => {
-        setChangePassworderror(error.response?.data.error_message);
-      }).finally(() => {
-        setChangePasswordLoader(false);
-      });
-    };
-
-  }, []);
 
   const userCategoriesCustom = useMemo(() => {
     return userConfiguration.categories_settings && userConfiguration.categories_settings.map(categories => {
@@ -233,10 +207,10 @@ export function GeneralSettings() {
                 <legend>Email</legend>
                 <span>{userConfiguration.username}</span>
               </fieldset>
-              <Button type="button" onClick={() => setModalPasswordIsOpen(true)}>MUDAR SENHA</Button>
               
-              <Input name="brand_name" defaultValue={userConfiguration.brand_name} isFieldset legendText="Nome da marca" type="text"/>
-              <fieldset className="fieldset">
+              <div>
+                <Input name="brand_name" defaultValue={userConfiguration.brand_name} isFieldset legendText="Nome da marca" type="text"/>
+                <fieldset className="fieldset">
                 <legend>Produção</legend>
                 {!userConfiguration.production_type ? (
                   <>
@@ -253,6 +227,7 @@ export function GeneralSettings() {
                   />
                 )}
               </fieldset>
+              </div>
             </section>
           </div>
           <Error>
@@ -327,14 +302,6 @@ export function GeneralSettings() {
           <button type="button" className="buttonCancel">CANCELAR</button>
         </div>
         </Form>
-
-        <PasswordModal 
-          handleUpdatePassword={handleUpdatePassword}
-          modalPasswordIsOpen={modalPasswordIsOpen}
-          setModalPasswordIsOpen={setModalPasswordIsOpen}
-          changePasswordError={changePasswordError}
-          changePasswordLoader={changePasswordLoader}
-        />
 
         <NewCategoryModal 
           handleNewCategory={handleNewCategory}
