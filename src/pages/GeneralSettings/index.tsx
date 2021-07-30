@@ -1,9 +1,8 @@
-import { FormHandles } from '@unform/core';
 import { Form } from '@unform/web';
 import { AxiosError } from 'axios';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
-import { AiOutlineClose, AiOutlinePlus } from 'react-icons/ai';
+import { AiOutlinePlus } from 'react-icons/ai';
 import { BsArrowLeftShort, BsTrashFill } from 'react-icons/bs';
 import {FaEllipsisV} from 'react-icons/fa';
 import {IoMdClose} from 'react-icons/io';
@@ -11,7 +10,6 @@ import {IoMdClose} from 'react-icons/io';
 import { Button } from '../../components/Button';
 import { Header } from '../../components/Header';
 import { Input } from '../../components/Input';
-import { Modal } from '../../components/Modal';
 import { Select } from '../../components/Select';
 import { api } from '../../services/api';
 
@@ -24,9 +22,19 @@ import {
   Content,
   Categories,
   Category,
-  PasswordModal,
   Error,
+  CategoryMiniModal,
 } from './styles';
+
+import { PasswordModal } from './parts/PasswordModal';
+import { NewCategoryModal } from './parts/NewCategoryModal';
+import { DeleteCategoryModal } from './parts/DeleteCategoryModal';
+
+type CategorySetting = {
+  category_id: number;
+  category_description: string;
+  default_price: number;
+}
 
 type UserConfiguration = {
   username: string;
@@ -35,11 +43,7 @@ type UserConfiguration = {
     id: number;
     description: string;
   };
-  categories_settings: {
-    category_id: number;
-    category_description: string;
-    default_price: number;
-  }[];
+  categories_settings: CategorySetting[];
 };
 
 type ProductionType = {
@@ -54,39 +58,30 @@ export type ErrorType = {
 };
 
 export function GeneralSettings() {
-  const changeFormPasswordRef = useRef<FormHandles>(null);
-
-  const [modalIsOpen, setModalIsOpen] = useState(false);
-
   const [userConfiguration, setUserConfiguration] = useState<UserConfiguration>({} as UserConfiguration);
   const [productionType, setProductionType] = useState<ProductionType[]>([]);
 
-  const [error, setError] = useState('');
-  const [changePassworderror, setChangePassworderror] = useState('');
+  const [ellipsisMiniModalIsOpen, setEllipsisMiniModalIsOpen] = useState(false);
 
   const [updateSettingsLoader, setUpdateSettingsLoader] = useState(false);
+  const [error, setError] = useState('');
+
+  // Partial password modal
+  const [changePasswordError, setChangePassworderror] = useState('');
   const [changePasswordLoader, setChangePasswordLoader] = useState(false);
+  const [modalPasswordIsOpen, setModalPasswordIsOpen] = useState(false);
+  
+  // Partial category modal  
+  const [modalNewCategoryIsOpen, setModalNewCategoryIsOpen] = useState(false);
+  const [newCategoryLoader, setNewCategoryLoader] = useState(false);
+  const [newCategoryerror, setNewCategoryerror] = useState('');
+  const [newCategory, setNewCategory] = useState<CategorySetting[]>([]);
 
-  useEffect(() => {
-    setError('');
-    api.get('/configuration').then((response) => {
-      setUserConfiguration(response.data);
-    }).catch((error: AxiosError) => {
-      if(error) {
-        setUserConfiguration({}  as UserConfiguration);
-        api.get('/user/me').then((response) => {
-          console.log(response.data);
-          setUserConfiguration(response.data);
-        });
-      };
-    });
-
-    api.get('/main/productionType').then(response => {
-      setProductionType(response.data);
-    }).catch((error: AxiosError) => {
-      setError(error.response?.data.error);
-    });
-  }, []);
+  // Partial delete category modal
+  const [isOpenModalToDeleteCategory, setIsOpenModalToDeleteCategory] = useState(false);
+  const [deleteCategoryLoader, setDeleteCategoryLoader] = useState(false);
+  const [categoryDescription, setCategoryDescription] = useState('');
+  const [categoryId, setCategoryId] = useState(0);
 
   const handleUpdateSettings = useCallback((data) => {
     setUpdateSettingsLoader(true);
@@ -125,7 +120,7 @@ export function GeneralSettings() {
       return;
     } else {
       api.put('/user/changePassword', data).then(response => {
-        setModalIsOpen(false);
+        setModalPasswordIsOpen(false);
         setChangePassworderror('');
       }).catch((error: AxiosError) => {
         setChangePassworderror(error.response?.data.error_message);
@@ -154,6 +149,74 @@ export function GeneralSettings() {
     });
   }, [productionType]);
 
+  const handleNewCategory = useCallback((data) => {
+    setNewCategoryLoader(true);
+    api.post('/configuration/categorySettings', data).then(response => {
+      setModalNewCategoryIsOpen(false);
+      setNewCategory(response.data);
+    }).catch((error: AxiosError) => {
+      console.log(error.response?.data);
+    }).finally(() => {
+      setNewCategoryLoader(false);
+    });
+  }, []);
+
+  const handleDeleteCategory = useCallback((data) => {
+    api.delete('/configuration/categorySettings').then(response => {
+      if(response) {
+        api.get('/configuration').then((response) => {
+          setUserConfiguration(response.data);
+        }).catch((error: AxiosError) => {
+          if(error) {
+            setUserConfiguration({}  as UserConfiguration);
+            api.get('/user/me').then((response) => {
+              setUserConfiguration(response.data);
+            });
+          };
+        });
+      }
+    }).catch((error) => {
+      console.log(error);
+    });
+  }, []);
+
+  // function formatPrice(price: number) {
+  //   const value = price.toLocaleString('pt-BR', {
+  //     style: 'currency',
+  //     currency: 'BRL'
+  //   });
+  //   console.log(value);
+  //   // setNewCategoryPrice();
+  // };
+
+  useEffect(() => {
+    setError('');
+    api.get('/configuration').then((response) => {
+      setUserConfiguration(response.data);
+    }).catch((error: AxiosError) => {
+      if(error) {
+        setUserConfiguration({}  as UserConfiguration);
+        api.get('/user/me').then((response) => {
+          setUserConfiguration(response.data);
+        });
+      };
+    });
+  }, [newCategory]);
+ 
+  useEffect(() => {
+    api.get('/main/productionType').then(response => {
+      setProductionType(response.data);
+    }).catch((error: AxiosError) => {
+      setError(error.response?.data.error);
+    });
+  }, []);
+
+  const handleButtonDeleteCategoryClick = useCallback((category_description: string) => {
+    setIsOpenModalToDeleteCategory(true);
+    setCategoryDescription(category_description);
+    setEllipsisMiniModalIsOpen(false);
+  }, []);
+
   return (
     <Container>
       <Header />
@@ -170,10 +233,10 @@ export function GeneralSettings() {
                 <legend>Email</legend>
                 <span>{userConfiguration.username}</span>
               </fieldset>
-              <button type="button" onClick={() => setModalIsOpen(true)}>MUDAR SENHA</button>
+              <Button type="button" onClick={() => setModalPasswordIsOpen(true)}>MUDAR SENHA</Button>
               
               <Input name="brand_name" defaultValue={userConfiguration.brand_name} isFieldset legendText="Nome da marca" type="text"/>
-              <fieldset className="fieldsetProduction">
+              <fieldset className="fieldset">
                 <legend>Produção</legend>
                 {!userConfiguration.production_type ? (
                   <>
@@ -198,7 +261,7 @@ export function GeneralSettings() {
           <section>
             <header>
               <h1>Lista de categorias</h1>
-              <Button type="button"><AiOutlinePlus /> NOVA</Button>
+              <Button type="button" onClick={() => setModalNewCategoryIsOpen(true)}><AiOutlinePlus /> NOVA</Button>
             </header>
             <Categories>
               <header>
@@ -222,11 +285,37 @@ export function GeneralSettings() {
                       <input type="checkbox"/>
                       <p className="checkmark"></p>
                     </LabelInput>
-                    <span>{categories.category_description} <button type="button"><IoMdClose /></button></span>
+                    <span>{categories.category_description} <button type="button" onClick={() =>handleButtonDeleteCategoryClick(categories.category_description)}><IoMdClose /></button></span>
                   </div>
                   <div>
                     <span className="spanPrice">{categories.default_price}</span>
-                    <button type="button"><FaEllipsisV /></button>
+                    <button type="button" onClick={() => {
+                      return (
+                        setEllipsisMiniModalIsOpen(!ellipsisMiniModalIsOpen),
+                        setCategoryId(categories.category_id)
+                      )
+                    }}>
+                      <FaEllipsisV />
+                    </button>
+                    {ellipsisMiniModalIsOpen && categoryId === categories.category_id && (
+                    <CategoryMiniModal>
+                      <i>
+                        <button 
+                          type="button" 
+                          onClick={() => setEllipsisMiniModalIsOpen(false)}>
+                            <IoMdClose />
+                        </button>
+                      </i>
+                      <button type="button">Editar</button>
+                      <p></p>
+                      <button 
+                        type="button" 
+                        className="delete" 
+                        onClick={() =>handleButtonDeleteCategoryClick(categories.category_description)}>
+                        Excluir
+                      </button>
+                    </CategoryMiniModal>
+                    )}
                   </div>
                 </Category>         
               ))}  
@@ -238,26 +327,30 @@ export function GeneralSettings() {
           <button type="button" className="buttonCancel">CANCELAR</button>
         </div>
         </Form>
-        <Modal
-          isOpen={modalIsOpen}
-        >
-          <PasswordModal>
-            <header>
-              <h2>MUDAR SENHA</h2>
-              <button onClick={() => setModalIsOpen(false)}><AiOutlineClose /></button>
-            </header>
-            <Form ref={changeFormPasswordRef} onSubmit={handleUpdatePassword}>
-              <Input name="current_password" isFieldset legendText="Senha atual" type="password"/>
-              <Input name="new_password" isFieldset legendText="Nova senha" type="password"/>
-              <Input name="new_password_confirm" isFieldset legendText="Confirme a nova senha" type="password"/>
-              {changePassworderror && <Error noPadding><p>{changePassworderror}</p></Error> }
-              <footer>
-                <Button type="submit">{changePasswordLoader ? <img className="imgLoading" src={LoadingGif} alt="loading" /> : 'SALVAR'}</Button>
-                <button type="button" onClick={() => setModalIsOpen(false)} className="buttonCancel">CANCELAR</button>
-              </footer>
-            </Form>
-          </PasswordModal>
-        </Modal>
+
+        <PasswordModal 
+          handleUpdatePassword={handleUpdatePassword}
+          modalPasswordIsOpen={modalPasswordIsOpen}
+          setModalPasswordIsOpen={setModalPasswordIsOpen}
+          changePasswordError={changePasswordError}
+          changePasswordLoader={changePasswordLoader}
+        />
+
+        <NewCategoryModal 
+          handleNewCategory={handleNewCategory}
+          modalNewCategoryIsOpen={modalNewCategoryIsOpen}
+          setModalNewCategoryIsOpen={setModalNewCategoryIsOpen}
+          newCategoryerror={newCategoryerror}
+          newCategoryLoader={newCategoryLoader}
+        />
+
+        <DeleteCategoryModal 
+          setIsOpenModal={setIsOpenModalToDeleteCategory}
+          isOpenModal={isOpenModalToDeleteCategory}
+          handleDeleteCategory={handleDeleteCategory}
+          deleteCategoryLoader={deleteCategoryLoader}
+          categoryDescription={categoryDescription}
+        />
       </Content>
     </Container>
   );
