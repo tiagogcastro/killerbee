@@ -61,6 +61,10 @@ form {
     }
   }
 
+  > div {
+    margin-top: 32px;
+  }
+
   footer {
     width: 100%;
     padding: 30px 20px 40px 20px;

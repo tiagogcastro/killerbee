@@ -90,21 +90,15 @@ export const MenuContent = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 12px;
+    gap: 2px;
     margin-bottom: 48px;
 
-    span {
-      background: var(--purple);
-      color: var(--full-white);
+    img {
       padding: 6px 10px;
+      width: 62px;
+      height: 48px;
 
       border-radius: 50%;
-
-      font-size: 12px;
-      letter-spacing: 0.4px;
-      font-family: 'IBM Plex Sans', sans-serif;
-      font-weight: 500;
-      color: var(--white-opacity);
     }
 
     h2 {
@@ -112,7 +106,7 @@ export const MenuContent = styled.div`
       letter-spacing: 0.4px;
       font-family: 'IBM Plex Sans', sans-serif;
       font-weight: 700;
-      color: var(--white-opacity);
+      color: #a4a6b3;
     }
   }
 
