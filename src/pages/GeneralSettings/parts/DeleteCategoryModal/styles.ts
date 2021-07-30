@@ -3,7 +3,7 @@ import styled from 'styled-components';
 export const DeleteCategoryTag = styled.div`
   background: var(--full-white);
 
-  max-width: 480px;
+  max-width: 720px;
   width: 100%;
 
   border-radius: 8px;
@@ -48,7 +48,20 @@ export const DeleteCategoryTag = styled.div`
 
     p {
       text-align: center;
-      margin: 64px 0 32px;
+      margin: 87px auto 38px;
+      max-width: 532px;
+
+      color: var(--semi-gray);
+      letter-spacing: 0.15px;
+      line-height: 24px;
+      font-size: 20px;
+      font-family: 'IBM Plex Sans', sans-serif;
+      font-weight: 500;
+
+      strong{
+        font-family: 'IBM Plex Sans', sans-serif;
+        color: initial;
+      }
     }
 
     footer {
