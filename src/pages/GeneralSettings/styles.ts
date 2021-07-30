@@ -61,11 +61,21 @@ export const Content = styled.div`
         width: 100%;
 
         section {
-          display: grid;
-          grid-template-columns: 1fr 1fr;
+          display: flex;
+          flex-direction: column;
           align-items: center;
           justify-content: flex-start;
           gap: 24px;
+          max-width: 630px;
+
+          > div {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            align-items: center;
+            gap: 12px;
+            width: 100%;
+
+          }
 
           button {
             max-width: 200px;
@@ -79,6 +89,7 @@ export const Content = styled.div`
             height: 64px;
             display: flex;
             align-items: center;
+            width: 100%;
             justify-content: space-between;
                     
             legend {
