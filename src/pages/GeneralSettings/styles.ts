@@ -68,23 +68,8 @@ export const Content = styled.div`
           gap: 24px;
 
           button {
-            padding: 16px 20px;
-            background: var(--purple);
-            color: var(--full-white);
-            text-align: center;
-            font-size: 14px;
-            line-height: 16px;
-            letter-spacing: 2px;
             max-width: 200px;
-            font-weight: 600;
-            border-radius: 99px;
-            transition: filter 0.2s;
-            cursor: pointer;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-
-            &:hover {
-              filter: brightness(90%);
-            }
+            padding: 16px 20px;
           }
 
           > fieldset {
@@ -111,47 +96,6 @@ export const Content = styled.div`
               letter-spacing: 0.15px;
               color: var(--semi-gray);
               background: transparent;
-            }
-          }
-
-          .fieldsetProduction {
-            border: 2px solid rgba(0, 0, 0, 0.08);
-            border-radius: 8px;
-            font-size: 14px;
-            height: 64px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-
-            > div {
-              width: 100%;
-              padding: 0 12px;
-
-              .css-1okebmr-indicatorSeparator {
-                background: none;
-              }
-
-              
-            }
-            div {
-              border: none;
-              box-shadow: none;
-            }
-
-            legend {
-              margin: 0 8px 0 12px;
-              padding: 0 8px;
-            }
-
-            select {
-              width: 100%;
-              padding: 0 16px 0 12px;
-              font-size: 1rem;
-              line-height: 2.4rem;
-              text-align: left;
-              border-radius: 8px;
-              letter-spacing: 0.15px;
-              color: var(--semi-gray);
             }
           }
         }
@@ -262,6 +206,8 @@ export const Categories = styled.div`
 `;
 
 export const Category = styled.div`
+  position: relative;
+
   padding: 14px 30px;
   display: flex;
   align-items: center;
@@ -273,7 +219,7 @@ export const Category = styled.div`
     border-bottom: none;
   }
 
-  div {
+  > div {
     display: flex;
     align-items: center;
     gap: 48px;
@@ -358,77 +304,77 @@ export const Category = styled.div`
   }
 `;
 
-export const PasswordModal = styled.div`
-  background: var(--full-white);
-
-  max-width: 380px;
+export const CategoryMiniModal = styled.div`
+  max-width: 150px;
   width: 100%;
 
-  border-radius: 8px;
+  position: absolute;
+  right: -130px;
+  top: 16px;
 
-  box-shadow: 0 8px 10px 0 rgba(0, 0, 0, 0.2), 0 6px 30px 0 rgba(0, 0, 0, 0.12), 0 16px 24px 0 rgba(0, 0, 0, 0.14);
+  background: var(--full-white);
+  box-shadow: 0 5px 15px 0 rgba(0, 0, 0, 0.2);
+  border-radius: 6px;
+  padding: 5px 5px 4px;
 
-  header {
-    background: var(--purple);
-    border-radius: 8px 8px 0 0;
-    padding: 20px 16px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  flex-direction: column;
 
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+  > button {
+    padding: 6px 8px;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    font-weight: normal;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: normal;
+    letter-spacing: 0.7px;
+    width: 100%;
+    text-align: left;
+    transition: background-color 0.2s;
 
-    h2 {
-      font-size: 14px;
-      font-weight: 600;
-      font-family: 'IBM Plex Sans', sans-serif;
-      letter-spacing: 1.25px;
-      color: var(--full-white);
-    }
-
-    button {
-      background: none;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-
-      svg {
-        color: var(--full-white);
-        width: 18px;
-        height: 18px;
-      }
+    &:hover {
+      background-color: #f2f0f9;
     }
   }
 
-  form {
+  > button.delete {
+    color: #d30000;
+  }
+
+  p {
+    border-top: 2px solid #f2f0f9;
     width: 100%;
-    padding: 0 40px;
+    height: 2px;
+    margin: 4px 0;
+  }
 
-    > div {
-      width: 100%;
+  i {
+    position: absolute;
+    top: -12px;
+    right: -12px;
+    z-index: 100;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
-      fieldset {
-        width: 100%;
+    border-radius: 50%;
+    background: #f9f9f9;
+    padding: 6.6px 6.5px 6.6px 6.6px;
+    box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.25);
 
-        button {
-          svg {
-            path {
-              color: rgba(0, 0, 0, 0.6);
-            }
-          }
-        }
-      }
-    }
-
-    footer {
-      width: 100%;
-      padding: 30px 20px 40px 20px;
+    button {
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 8px;
     }
   }
 `;
+
 
 type ErrorProps = {
   noPadding?: boolean;
