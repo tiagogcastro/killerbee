@@ -66,8 +66,8 @@ export function Login() {
   useEffect(() => {
     if(tokenIsValid) {
       history.push('/configuracoes');
-      return;
     };
+    return () => {}
   }, [history, tokenIsValid])
 
   return (
