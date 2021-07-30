@@ -17,7 +17,7 @@ export const Container = styled.div<ContainerProps>`
     justify-content: space-between;
 
     ${props => props.inputFocus && css`
-      border: 1px solid var(--purple);
+      border: 2px solid var(--purple);
 
       legend {
         color: var(--purple);
@@ -25,7 +25,7 @@ export const Container = styled.div<ContainerProps>`
     `}
 
     ${props => props.isError && css`
-      border: 1px solid var(--pink);
+      border: 2px solid var(--pink);
 
       legend {
         color: var(--pink);
