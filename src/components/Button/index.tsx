@@ -1,16 +1,11 @@
-import { ButtonHTMLAttributes, ReactNode } from 'react';
+import { ButtonHTMLAttributes } from 'react';
 
-import { Container } from './styles';
+import { ButtonTag } from './styles';
 
-type ButtonProps = ButtonHTMLAttributes<ButtonProps> & {
-  children?: ReactNode;
-  type?: string;
-}
+type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement>;
 
-export function Button({children, type}: ButtonProps) {
+export function Button({children, ...rest}: ButtonProps) {
   return (
-    <Container>
-      <button type={type}>{children}</button>
-    </Container>
+    <ButtonTag type="button" {...rest}>{children}</ButtonTag>
   );
 }
