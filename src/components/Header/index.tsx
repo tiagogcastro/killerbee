@@ -59,14 +59,12 @@ export function Header() {
           </button>
           <h2>Killerbee</h2>
         </div>
-        {menuOpen && (
         <div>
           <Link to="#" className="button_disabled">Dashboard</Link>
           <Link to="#" className="button_disabled">Pedidos</Link>
           <Link to="#" className="button_disabled">Produtos</Link>
           <Link to="#" className="button_disabled">Marketplaces</Link>
         </div>
-        )}
         <div>
           <button>
             <IoIosNotifications />
