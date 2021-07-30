@@ -65,6 +65,47 @@ export default createGlobalStyle`
       border-radius: 99px;
     }
   }
+
+  
+  .fieldset {
+    border: 2px solid rgba(0, 0, 0, 0.08);
+    border-radius: 8px;
+    font-size: 14px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    > div {
+      width: 100%;
+      padding: 0 12px;
+
+      .css-1okebmr-indicatorSeparator {
+        background: none;
+      }
+    }
+    
+    div {
+      border: none;
+      box-shadow: none;
+    }
+
+    legend {
+      margin: 0 8px 0 12px;
+      padding: 0 8px;
+    }
+
+    select {
+      width: 100%;
+      padding: 0 16px 0 12px;
+      font-size: 1rem;
+      line-height: 2.4rem;
+      text-align: left;
+      border-radius: 8px;
+      letter-spacing: 0.15px;
+      color: var(--semi-gray);
+    }
+  }
 `
 
 export const LabelInput = styled.label`
