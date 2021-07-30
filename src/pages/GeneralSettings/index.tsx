@@ -1,6 +1,6 @@
 import { Form } from '@unform/web';
 import { AxiosError } from 'axios';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import { AiOutlinePlus } from 'react-icons/ai';
 import { BsArrowLeftShort, BsTrashFill } from 'react-icons/bs';
@@ -26,9 +26,9 @@ import {
   CategoryMiniModal,
 } from './styles';
 
-import { EditCategoryModal } from './parts/EditCategoryModal';
-import { NewCategoryModal } from './parts/NewCategoryModal';
-import { DeleteCategoryModal } from './parts/DeleteCategoryModal';
+import { EditCategoryModalF, ModalHandlesEditCategory } from './parts/EditCategoryModal';
+import { ModalHandlesNewCategory , NewCategoryModalF} from './parts/NewCategoryModal';
+import { DeleteCategoryModalF, ModalHandlesDeleteCategory } from './parts/DeleteCategoryModal';
 
 type CategorySetting = {
   category_id: number;
@@ -36,7 +36,7 @@ type CategorySetting = {
   default_price: number | string;
 }
 
-type UserConfiguration = {
+export type UserConfiguration = {
   username: string;
   brand_name: string;
   production_type: {
@@ -62,27 +62,14 @@ export function GeneralSettings() {
   const [productionType, setProductionType] = useState<ProductionType[]>([]);
 
   const [ellipsisMiniModalIsOpen, setEllipsisMiniModalIsOpen] = useState(false);
+  const [categoryId, setCategoryId] = useState(0);
 
   const [updateSettingsLoader, setUpdateSettingsLoader] = useState(false);
   const [error, setError] = useState('');
 
-  // Partial category modal  
-  const [modalNewCategoryIsOpen, setModalNewCategoryIsOpen] = useState(false);
-  const [newCategoryLoader, setNewCategoryLoader] = useState(false);
-  const [newCategoryerror, setNewCategoryerror] = useState('');
-  const [newCategory, setNewCategory] = useState<CategorySetting[]>([]);
-
-  // Partial delete category modal
-  const [modalToDeleteCategoryIsOpen, setModalToDeleteCategoryIsOpen] = useState(false);
-  const [deleteCategoryLoader, setDeleteCategoryLoader] = useState(false);
-  const [category, setCategory] = useState({} as CategorySetting);
-  const [isOpenModalToDeleteCategory, setIsOpenModalToDeleteCategory] = useState(false);
-  const [categoryId, setCategoryId] = useState(0);
-
-  // Partial edit category modal
-  const [modalEditCategoryIsOpen, setModalToEditCategoryIsOpen] = useState(false);
-  const [editCategoryLoader, setEditCategoryLoader] = useState(false);
-  const [editCategoryerror, setEditCategoryerror] = useState('');
+  const newCategoryModalRef = useRef<ModalHandlesNewCategory>({} as ModalHandlesNewCategory);
+  const deleteModalRef = useRef<ModalHandlesDeleteCategory>({} as ModalHandlesDeleteCategory);
+  const editModalRef = useRef<ModalHandlesEditCategory>({} as ModalHandlesEditCategory);
 
   const handleUpdateSettings = useCallback((data) => {
     setUpdateSettingsLoader(true);
@@ -112,6 +99,44 @@ export function GeneralSettings() {
     });
   }, [userConfiguration.categories_settings]);
 
+  const handleButtonDeleteCategoryClick = useCallback((category: CategorySetting) => {
+    deleteModalRef.current.handleSetCategory(category);
+
+    setEllipsisMiniModalIsOpen(false);
+  }, []);
+  
+  const handleButtonEditCategoryClick = useCallback((category: CategorySetting) => {
+    editModalRef.current.handleSetCategory(category);
+
+    setEllipsisMiniModalIsOpen(false);
+  }, []);
+
+  const handleOpenNewCategoryModal = useCallback(() => {
+    newCategoryModalRef.current?.handleOpenNewCategoryModal();
+  }, []);
+
+  useEffect(() => {
+    setError('');
+    api.get('/configuration').then((response) => {
+      setUserConfiguration(response.data);
+    }).catch((error: AxiosError) => {
+      if(error) {
+        setUserConfiguration({}  as UserConfiguration);
+        api.get('/user/me').then((response) => {
+          setUserConfiguration(response.data);
+        });
+      };
+    });
+  }, []);
+
+  useEffect(() => {
+    api.get('/main/productionType').then(response => {
+      setProductionType(response.data);
+    }).catch((error: AxiosError) => {
+      setError(error.response?.data.error);
+    });
+  }, []);
+
   const userCategoriesCustom = useMemo(() => {
     return userConfiguration.categories_settings && userConfiguration.categories_settings.map(categories => {
       return {
@@ -129,92 +154,6 @@ export function GeneralSettings() {
       };
     });
   }, [productionType]);
-
-  const handleNewCategory = useCallback((data) => {
-    setNewCategoryLoader(true);
-    api.post('/configuration/categorySettings', data).then(response => {
-      setModalNewCategoryIsOpen(false);
-      setNewCategory(response.data);
-    }).catch((error: AxiosError) => {
-      console.log(error.response?.data);
-    }).finally(() => {
-      setNewCategoryLoader(false);
-    });
-  }, []);
-
-  const handleDeleteCategory = useCallback((data) => {
-    api.delete('/configuration/categorySettings').then(response => {
-      if(response) {
-        api.get('/configuration').then((response) => {
-          setUserConfiguration(response.data);
-        }).catch((error: AxiosError) => {
-          if(error) {
-            setUserConfiguration({}  as UserConfiguration);
-            api.get('/user/me').then((response) => {
-              setUserConfiguration(response.data);
-            });
-          };
-        });
-      }
-    }).catch((error) => {
-      console.log(error);
-    });
-  }, []);
-
-  const handleEditCategory = useCallback((data) => {
-    
-  }, []);
-
-  // function formatPrice(price: number) {
-  //   const value = price.toLocaleString('pt-BR', {
-  //     style: 'currency',
-  //     currency: 'BRL'
-  //   });
-  //   console.log(value);
-  //   // setNewCategoryPrice();
-  // };
-
-  useEffect(() => {
-    setError('');
-    api.get('/configuration').then((response) => {
-      setUserConfiguration(response.data);
-    }).catch((error: AxiosError) => {
-      if(error) {
-        setUserConfiguration({}  as UserConfiguration);
-        api.get('/user/me').then((response) => {
-          setUserConfiguration(response.data);
-        });
-      };
-    });
-  }, [newCategory]);
- 
-  useEffect(() => {
-    api.get('/main/productionType').then(response => {
-      setProductionType(response.data);
-    }).catch((error: AxiosError) => {
-      setError(error.response?.data.error);
-    });
-  }, []);
-
-  const handleButtonDeleteCategoryClick = useCallback(({category_id,category_description,default_price}: CategorySetting) => {
-    setIsOpenModalToDeleteCategory(true);
-    setCategory({
-      category_id,
-      category_description,
-      default_price
-    });
-    setEllipsisMiniModalIsOpen(false);
-  }, []);
-  
-  const handleButtonEditCategoryClick = useCallback(({category_id,category_description,default_price}: CategorySetting) => {
-    setModalToEditCategoryIsOpen(true);
-    setCategory({
-      category_id,
-      category_description,
-      default_price
-    });
-    setEllipsisMiniModalIsOpen(false);
-  }, []);
 
   return (
     <Container>
@@ -261,7 +200,7 @@ export function GeneralSettings() {
           <section>
             <header>
               <h1>Lista de categorias</h1>
-              <Button type="button" onClick={() => setModalNewCategoryIsOpen(true)}><AiOutlinePlus /> NOVA</Button>
+              <Button type="button" onClick={handleOpenNewCategoryModal}><AiOutlinePlus /> NOVA</Button>
             </header>
             <Categories>
               <header>
@@ -328,29 +267,16 @@ export function GeneralSettings() {
         </div>
         </Form>
 
-        <NewCategoryModal 
-          handleNewCategory={handleNewCategory}
-          modalNewCategoryIsOpen={modalNewCategoryIsOpen}
-          setModalNewCategoryIsOpen={setModalNewCategoryIsOpen}
-          newCategoryerror={newCategoryerror}
-          newCategoryLoader={newCategoryLoader}
+        <NewCategoryModalF 
+          ref={newCategoryModalRef}
         />
 
-        <DeleteCategoryModal 
-          setIsOpenModal={setIsOpenModalToDeleteCategory}
-          isOpenModal={isOpenModalToDeleteCategory}
-          handleDeleteCategory={handleDeleteCategory}
-          deleteCategoryLoader={deleteCategoryLoader}
-          category={category}
+        <DeleteCategoryModalF 
+          ref={deleteModalRef}
         />
 
-        <EditCategoryModal
-          category={category}
-          handleEditCategory={handleEditCategory}
-          modalEditCategoryIsOpen={modalEditCategoryIsOpen}
-          setIsOpenModal={setModalToEditCategoryIsOpen}
-          editCategoryError={editCategoryerror}
-          editCategoryLoader={editCategoryLoader}
+        <EditCategoryModalF
+          ref={editModalRef}
         />
       </Content>
     </Container>

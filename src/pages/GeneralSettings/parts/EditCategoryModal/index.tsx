@@ -1,14 +1,15 @@
 import { FormHandles } from '@unform/core';
 import { Form } from '@unform/web';
-import { AxiosError } from 'axios';
-import { useEffect, useMemo, useRef, useState } from 'react';
+// import { AxiosError } from 'axios';
+import { forwardRef, useCallback, useImperativeHandle } from 'react';
+import { useRef, useState } from 'react';
 
 import { AiOutlineClose } from 'react-icons/ai';
 
 import { Button } from '../../../../components/Button';
 import { Input } from '../../../../components/Input';
 import { Modal } from '../../../../components/Modal';
-import { api } from '../../../../services/api';
+// import { api } from '../../../../services/api';
 
 import LoadingGif from '.././../../../assets/images/loading.gif';
 
@@ -23,46 +24,39 @@ type CategorySetting = {
   default_price: number | string;
 };
 
-type EditCategoryModalProps = {
-  setIsOpenModal: React.Dispatch<React.SetStateAction<boolean>>;
-  modalEditCategoryIsOpen: boolean;
-  handleEditCategory(data: any): void;
-  editCategoryError: string;
-  editCategoryLoader: boolean;
-
-  category: CategorySetting;
+export type ModalHandlesEditCategory = {
+  handleEditCategory:(data: any) => void;
+  handleSetCategory: (category: CategorySetting) => void;
 };
 
-type CategoryType = {
-  id: number;
-  description: string;
-};
-
-export function EditCategoryModal({handleEditCategory, modalEditCategoryIsOpen, setIsOpenModal, editCategoryError, editCategoryLoader, category}: EditCategoryModalProps) {
+const EditCategoryModal: React.ForwardRefRenderFunction<ModalHandlesEditCategory> = (props, ref) => {
   const changeFormNewCategoryRef = useRef<FormHandles>(null);
+  
+  const [category, setCategory] = useState<CategorySetting>({} as CategorySetting);
 
-  const [categoryType, setCategoryType] = useState<CategoryType[]>([]);
+  const [isModalOpen, setIsOpenModal] = useState(false);
+  const [editCategoryLoader, setEditCategoryLoader] = useState(false);
+  const [editCategoryError, setEditCategoryError] = useState('');
 
-  useEffect(() => {
-    api.get('/main/category').then(response => {
-      setCategoryType(response.data);
-    }).catch((error: AxiosError) => {
-      console.log(error.response?.data.error);
-    });
+  const handleEditCategory = useCallback(() => {
+    setEditCategoryLoader(true);
   }, []);
 
-  const categoryTypeOptions = useMemo(() => {
-    return categoryType.map(category => {
-      return {
-        value: category.id,
-        label: category.description
-      };
-    });
-  }, [categoryType]);
+  const handleSetCategory = useCallback((category: CategorySetting) => {
+    setCategory(category);
+    setIsOpenModal(true);
+  }, []);
+
+  useImperativeHandle(ref, () => {
+    return {
+      handleEditCategory,
+      handleSetCategory
+    };
+  })
 
   return (
     <Modal
-      isOpen={modalEditCategoryIsOpen}
+      isOpen={isModalOpen}
     >
       <EditCategoryModalTag>
         <header>
@@ -86,3 +80,7 @@ export function EditCategoryModal({handleEditCategory, modalEditCategoryIsOpen, 
     </Modal>
   );
 }
+
+const EditCategoryModalF = forwardRef(EditCategoryModal);
+
+export { EditCategoryModalF };

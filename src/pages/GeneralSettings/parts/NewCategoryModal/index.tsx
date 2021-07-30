@@ -1,7 +1,7 @@
 import { FormHandles } from '@unform/core';
 import { Form } from '@unform/web';
 import { AxiosError } from 'axios';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { forwardRef, useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react';
 
 import { AiOutlineClose } from 'react-icons/ai';
 
@@ -18,21 +18,22 @@ import {
   NewCategoryModalTag,
 } from './styles';
 
-type NewCategoryModalProps = {
-  setModalNewCategoryIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  modalNewCategoryIsOpen: boolean;
-  handleNewCategory(data: any): void;
-  newCategoryerror: string;
-  newCategoryLoader: boolean;
-};
-
 type CategoryType = {
   id: number;
   description: string;
 };
 
-export function NewCategoryModal({modalNewCategoryIsOpen, setModalNewCategoryIsOpen, handleNewCategory, newCategoryerror, newCategoryLoader}: NewCategoryModalProps) {
+export type ModalHandlesNewCategory = {
+  handleOpenNewCategoryModal:() => void;
+  handleCloseNewCategoryModal:() => void;
+};
+
+const NewCategoryModal: React.ForwardRefRenderFunction<ModalHandlesNewCategory> = (props, ref) => {
   const changeFormNewCategoryRef = useRef<FormHandles>(null);
+
+  const [modalOpen, setOpenModal] = useState(false);
+  const [newCategoryLoader, setNewCategoryLoader] = useState(false);
+  const [newCategoryError, setNewCategoryError] = useState('');
 
   const [categoryType, setCategoryType] = useState<CategoryType[]>([]);
 
@@ -53,14 +54,45 @@ export function NewCategoryModal({modalNewCategoryIsOpen, setModalNewCategoryIsO
     });
   }, [categoryType]);
 
+  const handleOpenNewCategoryModal = useCallback(() => {
+    setOpenModal(true);
+  }, []);
+
+  const handleCloseNewCategoryModal = useCallback(() => {
+    setOpenModal(false);
+  }, []);
+  
+  const handleNewCategory = useCallback((data) => {
+    setNewCategoryLoader(true);
+    api.post('/configuration/categorySettings', data).then(response => {
+      setOpenModal(false);
+
+    }).catch((error: AxiosError) => {
+      // const errorData: ErrorType | undefined = error.response?.data
+
+      // if(errorData) {
+      //   loginFormRef.current?.setFieldError()
+      // }
+    }).finally(() => {
+      setNewCategoryLoader(false);
+    });
+  }, []);
+
+  useImperativeHandle(ref, () => {
+    return {
+      handleOpenNewCategoryModal,
+      handleCloseNewCategoryModal
+    }
+  })
+
   return (
     <Modal
-      isOpen={modalNewCategoryIsOpen}
+      isOpen={modalOpen}
     >
       <NewCategoryModalTag>
         <header>
           <h2>NOVA CATEGORIA</h2>
-          <button onClick={() => setModalNewCategoryIsOpen(false)}><AiOutlineClose /></button>
+          <button onClick={handleCloseNewCategoryModal}><AiOutlineClose /></button>
         </header>
         <Form ref={changeFormNewCategoryRef} onSubmit={handleNewCategory}>
           <fieldset className="fieldset">
@@ -70,13 +102,17 @@ export function NewCategoryModal({modalNewCategoryIsOpen, setModalNewCategoryIsO
               />
           </fieldset>
           <Input name="default_price"  isFieldset legendText="Valor padrão" type="text"/>
-          {newCategoryerror && <Error noPadding><p>{newCategoryerror}</p></Error> }
+          {newCategoryError && <Error noPadding><p>{newCategoryError}</p></Error> }
           <footer>
             <Button type="submit">{newCategoryLoader ? <img className="imgLoading" src={LoadingGif} alt="loading" /> : 'SALVAR'}</Button>
-            <button type="button" onClick={() => setModalNewCategoryIsOpen(false)} className="buttonCancel">CANCELAR</button>
+            <button type="button" onClick={handleCloseNewCategoryModal} className="buttonCancel">CANCELAR</button>
           </footer>
         </Form>
       </NewCategoryModalTag>
     </Modal>
   );
 }
+
+const NewCategoryModalF = forwardRef(NewCategoryModal);
+
+export {NewCategoryModalF};
