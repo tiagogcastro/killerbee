@@ -26,13 +26,14 @@ import {
   CategoryMiniModal,
 } from './styles';
 
+import { EditCategoryModal } from './parts/EditCategoryModal';
 import { NewCategoryModal } from './parts/NewCategoryModal';
 import { DeleteCategoryModal } from './parts/DeleteCategoryModal';
 
 type CategorySetting = {
   category_id: number;
   category_description: string;
-  default_price: number;
+  default_price: number | string;
 }
 
 type UserConfiguration = {
@@ -72,10 +73,16 @@ export function GeneralSettings() {
   const [newCategory, setNewCategory] = useState<CategorySetting[]>([]);
 
   // Partial delete category modal
-  const [isOpenModalToDeleteCategory, setIsOpenModalToDeleteCategory] = useState(false);
+  const [modalToDeleteCategoryIsOpen, setModalToDeleteCategoryIsOpen] = useState(false);
   const [deleteCategoryLoader, setDeleteCategoryLoader] = useState(false);
-  const [categoryDescription, setCategoryDescription] = useState('');
+  const [category, setCategory] = useState({} as CategorySetting);
+  const [isOpenModalToDeleteCategory, setIsOpenModalToDeleteCategory] = useState(false);
   const [categoryId, setCategoryId] = useState(0);
+
+  // Partial edit category modal
+  const [modalEditCategoryIsOpen, setModalToEditCategoryIsOpen] = useState(false);
+  const [editCategoryLoader, setEditCategoryLoader] = useState(false);
+  const [editCategoryerror, setEditCategoryerror] = useState('');
 
   const handleUpdateSettings = useCallback((data) => {
     setUpdateSettingsLoader(true);
@@ -154,6 +161,10 @@ export function GeneralSettings() {
     });
   }, []);
 
+  const handleEditCategory = useCallback((data) => {
+    
+  }, []);
+
   // function formatPrice(price: number) {
   //   const value = price.toLocaleString('pt-BR', {
   //     style: 'currency',
@@ -185,9 +196,23 @@ export function GeneralSettings() {
     });
   }, []);
 
-  const handleButtonDeleteCategoryClick = useCallback((category_description: string) => {
+  const handleButtonDeleteCategoryClick = useCallback(({category_id,category_description,default_price}: CategorySetting) => {
     setIsOpenModalToDeleteCategory(true);
-    setCategoryDescription(category_description);
+    setCategory({
+      category_id,
+      category_description,
+      default_price
+    });
+    setEllipsisMiniModalIsOpen(false);
+  }, []);
+  
+  const handleButtonEditCategoryClick = useCallback(({category_id,category_description,default_price}: CategorySetting) => {
+    setModalToEditCategoryIsOpen(true);
+    setCategory({
+      category_id,
+      category_description,
+      default_price
+    });
     setEllipsisMiniModalIsOpen(false);
   }, []);
 
@@ -260,7 +285,7 @@ export function GeneralSettings() {
                       <input type="checkbox"/>
                       <p className="checkmark"></p>
                     </LabelInput>
-                    <span>{categories.category_description} <button type="button" onClick={() =>handleButtonDeleteCategoryClick(categories.category_description)}><IoMdClose /></button></span>
+                    <span>{categories.category_description} <button type="button" onClick={() =>handleButtonDeleteCategoryClick(categories)}><IoMdClose /></button></span>
                   </div>
                   <div>
                     <span className="spanPrice">{categories.default_price}</span>
@@ -281,12 +306,12 @@ export function GeneralSettings() {
                             <IoMdClose />
                         </button>
                       </i>
-                      <button type="button">Editar</button>
+                      <button type="button" onClick={() => handleButtonEditCategoryClick(categories)}>Editar</button>
                       <p></p>
                       <button 
                         type="button" 
                         className="delete" 
-                        onClick={() =>handleButtonDeleteCategoryClick(categories.category_description)}>
+                        onClick={() =>handleButtonDeleteCategoryClick(categories)}>
                         Excluir
                       </button>
                     </CategoryMiniModal>
@@ -316,7 +341,16 @@ export function GeneralSettings() {
           isOpenModal={isOpenModalToDeleteCategory}
           handleDeleteCategory={handleDeleteCategory}
           deleteCategoryLoader={deleteCategoryLoader}
-          categoryDescription={categoryDescription}
+          category={category}
+        />
+
+        <EditCategoryModal
+          category={category}
+          handleEditCategory={handleEditCategory}
+          modalEditCategoryIsOpen={modalEditCategoryIsOpen}
+          setIsOpenModal={setModalToEditCategoryIsOpen}
+          editCategoryError={editCategoryerror}
+          editCategoryLoader={editCategoryLoader}
         />
       </Content>
     </Container>
