@@ -105,6 +105,10 @@ export default createGlobalStyle`
       letter-spacing: 0.15px;
       color: var(--semi-gray);
     }
+    
+    span {
+      padding: 0 16px 0 18px;
+    }
   }
 `
 
