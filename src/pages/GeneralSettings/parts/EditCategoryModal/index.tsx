@@ -62,7 +62,10 @@ const EditCategoryModal: React.ForwardRefRenderFunction<ModalHandlesEditCategory
   }, [stateToReloadConfiguration, setStateToReloadConfiguration, category.category_id]);
 
   const handleSetCategory = useCallback((category: CategorySetting) => {
-    setCategory(category);
+    setCategory({
+      ...category,
+      default_price: category.default_price.toString().replace("R$", ''),
+    });
     setIsOpenModal(true);
   }, []);
 
@@ -88,7 +91,17 @@ const EditCategoryModal: React.ForwardRefRenderFunction<ModalHandlesEditCategory
             <span>{category.category_description}</span>
           </fieldset>
         
-          <Input defaultValue={category.default_price} name="default_price" isFieldset legendText="Valor padrão" type="text"/>
+          <Input 
+            defaultValue={category.default_price} 
+            name="default_price" 
+            isFieldset 
+            legendText="Valor padrão" 
+            type="text"
+
+            mask="currency" 
+            maskPrefix="R$" 
+            maskStyle={true}
+          />
           {editCategoryError && <Error noPadding><p>{editCategoryError}</p></Error> }
           <footer>
             <Button type="submit">{editCategoryLoader ? <img className="imgLoading" src={LoadingGif} alt="loading" /> : 'SALVAR'}</Button>

@@ -62,7 +62,6 @@ const NewCategoryModal: React.ForwardRefRenderFunction<ModalHandlesNewCategory> 
     });
   }, [categoryType]);
  
-
   const handleOpenNewCategoryModal = useCallback(() => {
     setOpenModal(true);
   }, []);
@@ -110,7 +109,7 @@ const NewCategoryModal: React.ForwardRefRenderFunction<ModalHandlesNewCategory> 
               options={categoryTypeOptions}
               />
           </fieldset>
-          <Input name="default_price"  isFieldset legendText="Valor padrão" type="text"/>
+          <Input name="default_price" mask="currency" maskPrefix="R$" maskStyle={true} isFieldset legendText="Valor padrão" type="text"/>
           {newCategoryError && <Error noPadding><p>{newCategoryError}</p></Error> }
           <footer>
             <Button type="submit">{newCategoryLoader ? <img className="imgLoading" src={LoadingGif} alt="loading" /> : 'SALVAR'}</Button>
