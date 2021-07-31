@@ -14,6 +14,7 @@ import { Select } from '../../components/Select';
 import { api } from '../../services/api';
 
 import LoadingGif from '.././../assets/images/loading.gif';
+import notCategoryImage from '.././../assets/images/notCategory.svg';
 
 import { LabelInput } from '../../styles/global';
 
@@ -24,6 +25,7 @@ import {
   Category,
   Error,
   CategoryMiniModal,
+  NotUserConfiguration,
 } from './styles';
 
 import { EditCategoryModalF, ModalHandlesEditCategory } from './parts/EditCategoryModal';
@@ -36,6 +38,10 @@ type CategorySetting = {
   category_description: string;
   default_price: number | string;
 }
+
+export type User = {
+  username: string;
+};
 
 export type UserConfiguration = {
   username: string;
@@ -61,7 +67,8 @@ export type ErrorType = {
 export function GeneralSettings() {
   const { stateToReloadConfiguration } = useReloadConfiguration();
 
-  const [userConfiguration, setUserConfiguration] = useState<UserConfiguration>({} as UserConfiguration);
+  const [userConfiguration, setUserConfiguration] = useState<UserConfiguration>();
+  const [user, setUser] = useState<User>({} as User);
   const [productionType, setProductionType] = useState<ProductionType[]>([]);
 
   const [ellipsisMiniModalIsOpen, setEllipsisMiniModalIsOpen] = useState(false);
@@ -81,7 +88,7 @@ export function GeneralSettings() {
       production_type: {
         id: data.production_type,
       },
-      categories_settings: !userConfiguration.categories_settings ? [] : userConfiguration.categories_settings,
+      categories_settings: !userConfiguration?.categories_settings ? [] : userConfiguration?.categories_settings,
     };
 
     api.post('/configuration', dataCustom).then(response => {
@@ -100,7 +107,7 @@ export function GeneralSettings() {
     }).finally(() =>{
       setUpdateSettingsLoader(false);
     });
-  }, [userConfiguration.categories_settings]);
+  }, [userConfiguration?.categories_settings]);
 
   const handleButtonDeleteCategoryClick = useCallback((category: CategorySetting) => {
     deleteModalRef.current.handleSetCategory(category);
@@ -124,9 +131,8 @@ export function GeneralSettings() {
       setUserConfiguration(response.data);
     }).catch((error: AxiosError) => {
       if(error) {
-        setUserConfiguration({}  as UserConfiguration);
         api.get('/user/me').then((response) => {
-          setUserConfiguration(response.data);
+          setUser(response.data);
         });
       };
     });
@@ -141,13 +147,13 @@ export function GeneralSettings() {
   }, []);
 
   const userCategoriesCustom = useMemo(() => {
-    return userConfiguration.categories_settings && userConfiguration.categories_settings.map(categories => {
+    return userConfiguration?.categories_settings && userConfiguration?.categories_settings.map(categories => {
       return {
         ...categories,
         default_price: categories.default_price.toLocaleString('pt-br', {style: 'currency', currency: 'BRL'}),
       };
     });
-  }, [userConfiguration.categories_settings]);
+  }, [userConfiguration?.categories_settings]);
 
   const productionTypeOptions = useMemo(() => {
     return productionType.map(production => {
@@ -172,14 +178,14 @@ export function GeneralSettings() {
             <section>
               <fieldset>
                 <legend>Email</legend>
-                <span>{userConfiguration.username}</span>
+                <span>{userConfiguration?.username || user.username}</span>
               </fieldset>
               
               <div>
-                <Input name="brand_name" defaultValue={userConfiguration.brand_name} isFieldset legendText="Nome da marca" type="text"/>
+                <Input name="brand_name" defaultValue={userConfiguration?.brand_name} isFieldset legendText="Nome da marca" type="text"/>
                 <fieldset className="fieldset">
                 <legend>Produção</legend>
-                {!userConfiguration.production_type ? (
+                {!userConfiguration?.production_type ? (
                   <>
                   <Select name="production_type"
                     options={productionTypeOptions}
@@ -200,68 +206,76 @@ export function GeneralSettings() {
           <Error>
             <p>{error}</p>
           </Error>
-          <section>
-            <header>
-              <h1>Lista de categorias</h1>
-              <Button type="button" onClick={handleOpenNewCategoryModal}><AiOutlinePlus /> NOVA</Button>
-            </header>
-            <Categories>
+          
+            <section>
               <header>
-                <div>
-                  <LabelInput>
-                    <input type="checkbox"/>
-                    <p className="checkmark"></p>
-                  </LabelInput>
-                  <span>Categoria</span>
-                </div>
-
-                <div>
-                  <span>Preço padrão</span>
-                  <button type="button"><BsTrashFill /></button>
-                </div>
+                <h1>Lista de categorias</h1>
+                {userConfiguration && <Button type="button" onClick={handleOpenNewCategoryModal}><AiOutlinePlus /> NOVA</Button>}
               </header>
-              {userCategoriesCustom && userCategoriesCustom.map(categories => (
-                <Category key={categories.category_id}>
+              {!userConfiguration ? (
+                <NotUserConfiguration>
+                  <p>Conclua seus dados para poder cadastrar categorias</p>
+                  <img src={notCategoryImage} alt="Sem categorias" />
+                </NotUserConfiguration>
+              ) : (
+              <Categories>
+                <header>
                   <div>
                     <LabelInput>
                       <input type="checkbox"/>
                       <p className="checkmark"></p>
                     </LabelInput>
-                    <span>{categories.category_description} <button type="button" onClick={() =>handleButtonDeleteCategoryClick(categories)}><IoMdClose /></button></span>
+                    <span>Categoria</span>
                   </div>
+
                   <div>
-                    <span className="spanPrice">{categories.default_price}</span>
-                    <button type="button" onClick={() => {
-                      return (
-                        setEllipsisMiniModalIsOpen(!ellipsisMiniModalIsOpen),
-                        setCategoryId(categories.category_id)
-                      )
-                    }}>
-                      <FaEllipsisV />
-                    </button>
-                    {ellipsisMiniModalIsOpen && categoryId === categories.category_id && (
-                    <CategoryMiniModal>
-                      <i>
+                    <span>Preço padrão</span>
+                    <button type="button"><BsTrashFill /></button>
+                  </div>
+                </header>
+                {userCategoriesCustom && userCategoriesCustom.map(categories => (
+                  <Category key={categories.category_id}>
+                    <div>
+                      <LabelInput>
+                        <input type="checkbox"/>
+                        <p className="checkmark"></p>
+                      </LabelInput>
+                      <span>{categories.category_description} <button type="button" onClick={() =>handleButtonDeleteCategoryClick(categories)}><IoMdClose /></button></span>
+                    </div>
+                    <div>
+                      <span className="spanPrice">{categories.default_price}</span>
+                      <button type="button" onClick={() => {
+                        return (
+                          setEllipsisMiniModalIsOpen(!ellipsisMiniModalIsOpen),
+                          setCategoryId(categories.category_id)
+                        )
+                      }}>
+                        <FaEllipsisV />
+                      </button>
+                      {ellipsisMiniModalIsOpen && categoryId === categories.category_id && (
+                      <CategoryMiniModal>
+                        <i>
+                          <button 
+                            type="button" 
+                            onClick={() => setEllipsisMiniModalIsOpen(false)}>
+                              <IoMdClose />
+                          </button>
+                        </i>
+                        <button type="button" onClick={() => handleButtonEditCategoryClick(categories)}>Editar</button>
+                        <p></p>
                         <button 
                           type="button" 
-                          onClick={() => setEllipsisMiniModalIsOpen(false)}>
-                            <IoMdClose />
+                          className="delete" 
+                          onClick={() =>handleButtonDeleteCategoryClick(categories)}>
+                          Excluir
                         </button>
-                      </i>
-                      <button type="button" onClick={() => handleButtonEditCategoryClick(categories)}>Editar</button>
-                      <p></p>
-                      <button 
-                        type="button" 
-                        className="delete" 
-                        onClick={() =>handleButtonDeleteCategoryClick(categories)}>
-                        Excluir
-                      </button>
-                    </CategoryMiniModal>
-                    )}
-                  </div>
-                </Category>         
-              ))}  
-            </Categories>
+                      </CategoryMiniModal>
+                      )}
+                    </div>
+                  </Category>         
+                ))}  
+              </Categories>
+            )}
           </section>
         </main>
         <div>

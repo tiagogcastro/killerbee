@@ -24,6 +24,12 @@ type CategoryType = {
   description: string;
 };
 
+export type ErrorType = {
+  error_message: string;
+  error_status: 'C08';
+  status_code: number;
+};
+
 export type ModalHandlesNewCategory = {
   handleOpenNewCategoryModal:() => void;
   handleCloseNewCategoryModal:() => void;
@@ -72,15 +78,31 @@ const NewCategoryModal: React.ForwardRefRenderFunction<ModalHandlesNewCategory> 
   
   const handleNewCategory = useCallback((data) => {
     setNewCategoryLoader(true);
-    api.post('/configuration/categorySettings', data).then(response => {
+
+    const dataCustom = {
+      ...data,
+      default_price: data.default_price.replace(/\D/g, '')
+    };
+    
+    api.post('/configuration/categorySettings', dataCustom).then(response => {
       setOpenModal(false);
       setStateToReloadConfiguration(!stateToReloadConfiguration);
     }).catch((error: AxiosError) => {
-      // const errorData: ErrorType | undefined = error.response?.data
+      const errorType = {
+        C08: 'default_price',
+        default: 'Erro não esperado'
+      };
+      const errorData: ErrorType | undefined = error.response?.data;
 
-      // if(errorData) {
-      //   loginFormRef.current?.setFieldError()
-      // }
+      if(!data.category_id) {
+        setNewCategoryError('Categoria não informada');
+        return;
+      }
+
+      if(errorData) {
+        changeFormNewCategoryRef.current?.setFieldError(errorType[(errorData).error_status] || errorType.default , (errorData).error_message);
+        setNewCategoryError('');
+      };
     }).finally(() => {
       setNewCategoryLoader(false);
     });

@@ -49,6 +49,12 @@ form {
   > div {
     width: 100%;
 
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+    flex-direction: column;
+    gap: 1px;
+
     fieldset {
       width: 100%;
     }

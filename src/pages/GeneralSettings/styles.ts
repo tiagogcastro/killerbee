@@ -405,3 +405,26 @@ export const Error = styled.aside<ErrorProps>`
     color: var(--pink);
   }
 `;
+
+export const NotUserConfiguration = styled.div`
+  padding: 24px 0 24px 32px;
+
+  display: flex;
+  align-items: center;
+  justify-content:center;
+
+  p {
+    max-width: 360px;
+    
+    color: var(--gray);
+    letter-spacing: 0.15px;
+    line-height: 24px;
+    font-size: 20px;
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-weight: 500;
+  }
+
+  img {
+    max-width: 360px;
+  }
+`;

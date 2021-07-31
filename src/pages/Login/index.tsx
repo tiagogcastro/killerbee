@@ -24,12 +24,19 @@ export type ErrorType = {
 };
 
 export function Login() {
-  const { signinWithEmail, tokenIsValid } = useAuth();
+  const { signinWithEmail, tokenIsValid, token } = useAuth();
   const history = useHistory();
   const [loginLoader, setLoginLoader] = useState(false);
   const [error, setError] = useState('');
 
   const loginFormRef = useRef<FormHandles>(null);
+
+  useEffect(() => {
+    if(tokenIsValid && token) {
+      history.push('/configuracoes');
+    };
+    return () => {}
+  }, [history, tokenIsValid, token])
 
   const handleLoginForm = useCallback(async (data) => {
     setLoginLoader(true);
@@ -41,35 +48,27 @@ export function Login() {
       loginFormRef.current?.setErrors({})
       
       signinWithEmail(data).then(response => {
+        setLoginLoader(false);
+        setError('');
         history.push('/configuracoes');
       }).catch((error: AxiosError) => {
-        const errorType = {
+        setLoginLoader(false);
+         const errorType = {
           C01: 'username',
           C02: 'password',
           default: 'Erro não esperado'
         };
 
-        const errorData: ErrorType | undefined = error.response?.data
+        const errorData: ErrorType | undefined = error.response?.data;
 
         if(errorData) {
           loginFormRef.current?.setFieldError(errorType[(errorData).error_status] || errorType.default , (errorData).error_message);
           setError('');
-        }
-      }).finally(() => {
-        setLoginLoader(false);
-        setError('');
+        };
       });
     }
-
   }, [signinWithEmail, history]);
-
-  useEffect(() => {
-    if(tokenIsValid) {
-      history.push('/configuracoes');
-    };
-    return () => {}
-  }, [history, tokenIsValid])
-
+  
   return (
     <Container>
       <Content>

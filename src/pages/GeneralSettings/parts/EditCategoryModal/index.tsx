@@ -26,6 +26,12 @@ type CategorySetting = {
   default_price: number | string;
 };
 
+export type ErrorType = {
+  error_message: string;
+  error_status: 'C08';
+  status_code: number;
+};
+
 export type ModalHandlesEditCategory = {
   handleEditCategory:(data: any) => void;
   handleSetCategory: (category: CategorySetting) => void;
@@ -41,12 +47,11 @@ const EditCategoryModal: React.ForwardRefRenderFunction<ModalHandlesEditCategory
   const [editCategoryLoader, setEditCategoryLoader] = useState(false);
   const [editCategoryError, setEditCategoryError] = useState('');
 
-
   const handleEditCategory = useCallback((data) => {
     setEditCategoryLoader(true);
-    
+
     const customData = {
-      default_price: Number(data.default_price.replace(/[^\d]+/g,'')),
+      default_price: data.default_price.replace(/\D/g, ''),
       category_id: category.category_id,
     };
 
@@ -54,7 +59,16 @@ const EditCategoryModal: React.ForwardRefRenderFunction<ModalHandlesEditCategory
       setIsOpenModal(false);
       setStateToReloadConfiguration(!stateToReloadConfiguration);
     }).catch((error) => {
+      const errorType = {
+        C08: 'default_price',
+        default: 'Erro não esperado'
+      };
+      const errorData: ErrorType | undefined = error.response?.data;
 
+      if(errorData) {
+        changeFormNewCategoryRef.current?.setFieldError(errorType[(errorData).error_status] || errorType.default , (errorData).error_message);
+        setEditCategoryError('');
+      };
     }).finally(() => {
       setEditCategoryLoader(false);
     });
