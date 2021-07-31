@@ -29,6 +29,7 @@ import {
 import { EditCategoryModalF, ModalHandlesEditCategory } from './parts/EditCategoryModal';
 import { ModalHandlesNewCategory , NewCategoryModalF} from './parts/NewCategoryModal';
 import { DeleteCategoryModalF, ModalHandlesDeleteCategory } from './parts/DeleteCategoryModal';
+import { useReloadConfiguration } from '../../contexts/ReloadConfigurationsContext';
 
 type CategorySetting = {
   category_id: number;
@@ -58,6 +59,8 @@ export type ErrorType = {
 };
 
 export function GeneralSettings() {
+  const { stateToReloadConfiguration } = useReloadConfiguration();
+
   const [userConfiguration, setUserConfiguration] = useState<UserConfiguration>({} as UserConfiguration);
   const [productionType, setProductionType] = useState<ProductionType[]>([]);
 
@@ -127,7 +130,7 @@ export function GeneralSettings() {
         });
       };
     });
-  }, []);
+  }, [stateToReloadConfiguration]);
 
   useEffect(() => {
     api.get('/main/productionType').then(response => {
@@ -267,7 +270,7 @@ export function GeneralSettings() {
         </div>
         </Form>
 
-        <NewCategoryModalF 
+        <NewCategoryModalF
           ref={newCategoryModalRef}
         />
 

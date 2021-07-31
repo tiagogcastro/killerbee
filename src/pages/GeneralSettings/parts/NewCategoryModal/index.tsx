@@ -9,6 +9,7 @@ import { Button } from '../../../../components/Button';
 import { Input } from '../../../../components/Input';
 import { Modal } from '../../../../components/Modal';
 import { Select } from '../../../../components/Select';
+import { useReloadConfiguration } from '../../../../contexts/ReloadConfigurationsContext';
 import { api } from '../../../../services/api';
 
 import LoadingGif from '.././../../../assets/images/loading.gif';
@@ -29,6 +30,7 @@ export type ModalHandlesNewCategory = {
 };
 
 const NewCategoryModal: React.ForwardRefRenderFunction<ModalHandlesNewCategory> = (props, ref) => {
+  const { stateToReloadConfiguration, setStateToReloadConfiguration } = useReloadConfiguration();
   const changeFormNewCategoryRef = useRef<FormHandles>(null);
 
   const [modalOpen, setOpenModal] = useState(false);
@@ -45,6 +47,12 @@ const NewCategoryModal: React.ForwardRefRenderFunction<ModalHandlesNewCategory> 
     });
   }, []);
 
+  // useEffect(() => {
+  //   api.get('/configuration').then((response) => {
+  //     setCategorySetting(response.data.categories_settings);
+  //   });
+  // }, [modalOpen]);
+
   const categoryTypeOptions = useMemo(() => {
     return categoryType.map(category => {
       return {
@@ -53,6 +61,7 @@ const NewCategoryModal: React.ForwardRefRenderFunction<ModalHandlesNewCategory> 
       };
     });
   }, [categoryType]);
+ 
 
   const handleOpenNewCategoryModal = useCallback(() => {
     setOpenModal(true);
@@ -66,7 +75,7 @@ const NewCategoryModal: React.ForwardRefRenderFunction<ModalHandlesNewCategory> 
     setNewCategoryLoader(true);
     api.post('/configuration/categorySettings', data).then(response => {
       setOpenModal(false);
-
+      setStateToReloadConfiguration(!stateToReloadConfiguration);
     }).catch((error: AxiosError) => {
       // const errorData: ErrorType | undefined = error.response?.data
 
@@ -76,14 +85,14 @@ const NewCategoryModal: React.ForwardRefRenderFunction<ModalHandlesNewCategory> 
     }).finally(() => {
       setNewCategoryLoader(false);
     });
-  }, []);
+  }, [stateToReloadConfiguration, setStateToReloadConfiguration]);
 
   useImperativeHandle(ref, () => {
     return {
       handleOpenNewCategoryModal,
       handleCloseNewCategoryModal
     }
-  })
+  });
 
   return (
     <Modal

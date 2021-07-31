@@ -9,6 +9,7 @@ import { AiOutlineClose } from 'react-icons/ai';
 import { Button } from '../../../../components/Button';
 import { Input } from '../../../../components/Input';
 import { Modal } from '../../../../components/Modal';
+import { useReloadConfiguration } from '../../../../contexts/ReloadConfigurationsContext';
 // import { api } from '../../../../services/api';
 
 import LoadingGif from '.././../../../assets/images/loading.gif';
@@ -31,6 +32,7 @@ export type ModalHandlesEditCategory = {
 
 const EditCategoryModal: React.ForwardRefRenderFunction<ModalHandlesEditCategory> = (props, ref) => {
   const changeFormNewCategoryRef = useRef<FormHandles>(null);
+  const {stateToReloadConfiguration ,setStateToReloadConfiguration } = useReloadConfiguration();
   
   const [category, setCategory] = useState<CategorySetting>({} as CategorySetting);
 
@@ -40,7 +42,8 @@ const EditCategoryModal: React.ForwardRefRenderFunction<ModalHandlesEditCategory
 
   const handleEditCategory = useCallback(() => {
     setEditCategoryLoader(true);
-  }, []);
+    setStateToReloadConfiguration(!stateToReloadConfiguration);
+  }, [stateToReloadConfiguration, setStateToReloadConfiguration]);
 
   const handleSetCategory = useCallback((category: CategorySetting) => {
     setCategory(category);
