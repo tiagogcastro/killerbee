@@ -71,14 +71,14 @@ export function Header() {
             <button>
               <IoIosNotifications />
             </button>
-            <button onClick={() => setDropdown(!dropdown)}>
+            <div onClick={() => setDropdown(!dropdown)}>
               <AiFillSetting />
 
               <div className="dropdown-menu">
                 <Link to="/configuracoes">Configurações</Link>
                 <button onClick={signOut}>Sair da conta</button>
               </div>
-            </button>
+            </div>
             <button onClick={signOut}>
               <BsBoxArrowInRight />
             </button>

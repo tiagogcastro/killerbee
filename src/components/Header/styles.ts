@@ -22,12 +22,13 @@ export const Content = styled.div<ContentProps>`
     gap: 32px;
     color: var(--full-white);
 
-    button {
+    button, > div {
       background: none;
       display: flex;
       align-items: center;
       justify-content: center;
       position: relative;
+      cursor: pointer;
 
       svg {
         color: var(--full-white);
