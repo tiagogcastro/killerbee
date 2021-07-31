@@ -10,6 +10,7 @@ import { Button } from '../../../../components/Button';
 import { Input } from '../../../../components/Input';
 import { Modal } from '../../../../components/Modal';
 import { useReloadConfiguration } from '../../../../contexts/ReloadConfigurationsContext';
+import { api } from '../../../../services/api';
 // import { api } from '../../../../services/api';
 
 import LoadingGif from '.././../../../assets/images/loading.gif';
@@ -40,10 +41,25 @@ const EditCategoryModal: React.ForwardRefRenderFunction<ModalHandlesEditCategory
   const [editCategoryLoader, setEditCategoryLoader] = useState(false);
   const [editCategoryError, setEditCategoryError] = useState('');
 
-  const handleEditCategory = useCallback(() => {
+
+  const handleEditCategory = useCallback((data) => {
     setEditCategoryLoader(true);
-    setStateToReloadConfiguration(!stateToReloadConfiguration);
-  }, [stateToReloadConfiguration, setStateToReloadConfiguration]);
+    
+    const customData = {
+      default_price: Number(data.default_price.replace(/[^\d]+/g,'')),
+      category_id: category.category_id,
+    };
+
+    api.post('/configuration/categorySettings', customData).then(response => {
+      setIsOpenModal(false);
+      setStateToReloadConfiguration(!stateToReloadConfiguration);
+    }).catch((error) => {
+
+    }).finally(() => {
+      setEditCategoryLoader(false);
+    });
+
+  }, [stateToReloadConfiguration, setStateToReloadConfiguration, category.category_id]);
 
   const handleSetCategory = useCallback((category: CategorySetting) => {
     setCategory(category);
@@ -55,7 +71,7 @@ const EditCategoryModal: React.ForwardRefRenderFunction<ModalHandlesEditCategory
       handleEditCategory,
       handleSetCategory
     };
-  })
+  });
 
   return (
     <Modal
@@ -72,7 +88,7 @@ const EditCategoryModal: React.ForwardRefRenderFunction<ModalHandlesEditCategory
             <span>{category.category_description}</span>
           </fieldset>
         
-          <Input name="default_price" defaultValue={category.default_price} isFieldset legendText="Valor padrão" type="text"/>
+          <Input defaultValue={category.default_price} name="default_price" isFieldset legendText="Valor padrão" type="text"/>
           {editCategoryError && <Error noPadding><p>{editCategoryError}</p></Error> }
           <footer>
             <Button type="submit">{editCategoryLoader ? <img className="imgLoading" src={LoadingGif} alt="loading" /> : 'SALVAR'}</Button>
