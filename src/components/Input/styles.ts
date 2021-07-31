@@ -3,6 +3,7 @@ import styled, { css } from 'styled-components';
 type ContainerProps = {
   inputFocus: boolean;
   isError?: boolean;
+  isMask?: boolean;
 }
 
 export const Container = styled.div<ContainerProps>`
@@ -91,6 +92,16 @@ export const Container = styled.div<ContainerProps>`
       }
     }
   }
+
+  ${props => props.isMask && css`
+    p {
+      padding-left: 8px
+    }
+
+    input {
+      padding: 0 16px 0 8px;
+    }
+  `}
 `;
 
 export const Error = styled.span`

@@ -1,6 +1,8 @@
 import { useEffect, useRef, InputHTMLAttributes, useState, useCallback } from 'react';
 import { useField } from '@unform/core';
 
+import { cep, currency } from '../../utils/masks';
+
 import {AiFillEyeInvisible, AiFillEye} from 'react-icons/ai';
 
 import {
@@ -15,10 +17,15 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement>  {
   isFieldset?: boolean;
   isPassword?: boolean;
   errorMessage?: string;
+
+  mask?: 'cep' | 'currency';
+  maskPrefix?: string;
+  maskStyle?: boolean;
 };
 
-export const Input = ({ name,legendText, isPassword, isFieldset, errorMessage, type, ...rest }: InputProps) => {
+export const Input = ({ name, legendText, isPassword, isFieldset, errorMessage, type, mask, maskPrefix, maskStyle, ...rest }: InputProps) => {
   const inputRef = useRef<HTMLInputElement>(null);
+  const { fieldName, registerField, error } = useField(name);
 
   const [inputFocus, setInputFocus] = useState(false);
   const [passwordVisible, setPasswordVisible] = useState(false);
@@ -29,10 +36,7 @@ export const Input = ({ name,legendText, isPassword, isFieldset, errorMessage, t
 
   const handleInputBlur = useCallback(() => {
     setInputFocus(false)
-
   }, []);
-
-  const { fieldName, registerField, error } = useField(name);
 
   useEffect(() => {
     registerField({
@@ -49,13 +53,24 @@ export const Input = ({ name,legendText, isPassword, isFieldset, errorMessage, t
       },
     })
   }, [fieldName, registerField]);
+  
+  const handleKeyUp = useCallback((e: React.FormEvent<HTMLInputElement>) => {
+    if(mask === 'cep') {
+      cep(e);
+    }
+
+    if(mask === 'currency') {
+      currency(e);
+    }
+  }, [mask]);
 
   return (
-    <Container isError={!!error} inputFocus={inputFocus}>
+    <Container isMask={maskStyle} isError={!!error} inputFocus={inputFocus}>
      {isFieldset ? (
       <>
       <fieldset>
         <legend>{legendText}</legend>
+        {maskPrefix && <p>{maskPrefix}</p>}
         <input
           onFocus={handleInputFocus}
           onBlur={handleInputBlur}
@@ -63,6 +78,8 @@ export const Input = ({ name,legendText, isPassword, isFieldset, errorMessage, t
           ref={inputRef}
           type={passwordVisible ? 'text' : type}
           {...rest}
+
+          onKeyUp={handleKeyUp}
         />
         {type === 'password' && (
           passwordVisible ? (
@@ -79,6 +96,7 @@ export const Input = ({ name,legendText, isPassword, isFieldset, errorMessage, t
     ) : (
       <>
       <span className={isPassword ? "inputNotFieldset" : ''}>
+        {maskPrefix && <p>{maskPrefix}</p>}
         <input
           name={name}
           onFocus={handleInputFocus}
@@ -86,6 +104,8 @@ export const Input = ({ name,legendText, isPassword, isFieldset, errorMessage, t
           ref={inputRef}
           type={passwordVisible ? 'text' : type}
           {...rest}
+
+          onKeyUp={handleKeyUp}
         />
         {type === 'password' && (
           passwordVisible ? (
