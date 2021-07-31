@@ -51,7 +51,8 @@ export const Input = ({ name, legendText, isPassword, isFieldset, errorMessage, 
       clearValue: ref => {
         ref.current.value = ''
       },
-    })
+    });
+
   }, [fieldName, registerField]);
   
   const handleKeyUp = useCallback((e: React.FormEvent<HTMLInputElement>) => {
