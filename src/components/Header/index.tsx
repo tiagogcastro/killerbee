@@ -24,6 +24,7 @@ export function Header() {
   const { signOut } = useAuth();
   
   const [menuOpen, setMenuOpen] = useState(false);
+  const [dropdown, setDropdown] = useState(false);
 
   // Partial password modal
   const [changePasswordError, setChangePassworderror] = useState('');
@@ -51,99 +52,106 @@ export function Header() {
   }, []);
 
   return (
-    <Container>
-      <Content> 
-        <div>
-          <button onClick={() => setMenuOpen(!menuOpen)}>
-            <FiMenu />
-          </button>
-          <h2>Killerbee</h2>
-        </div>
-        <div>
-          <Link to="#" className="button_disabled">Dashboard</Link>
-          <Link to="#" className="button_disabled">Pedidos</Link>
-          <Link to="#" className="button_disabled">Produtos</Link>
-          <Link to="#" className="button_disabled">Marketplaces</Link>
-        </div>
-        <div>
-          <button>
-            <IoIosNotifications />
-          </button>
-          <button>
-            <AiFillSetting />
-          </button>
-          <button onClick={signOut}>
-            <BsBoxArrowInRight />
-          </button>
-        </div>
-      </Content>
-      {menuOpen && (
-      <Menu>
-        <MenuContent>
-          <header>
-            <img src={Logo2} alt="Logo da KillerBee" />
+    <>
+      <Container>
+        <Content dropdown={dropdown}> 
+          <div>
+            <button onClick={() => setMenuOpen(!menuOpen)}>
+              <FiMenu />
+            </button>
             <h2>Killerbee</h2>
-          </header>
-          <section>
-            <Link to="#">
-              <span>
-                <BsPieChartFill />
-                Dashboard
-              </span>
-            </Link>
-            <Link to="#">
-              <span>
-                <FaTicketAlt />
-                Pedidos
-              </span>
-            </Link>
-            <Link to="#">
-              <span>
-                <AiOutlineShoppingCart />
-                Produtos
-              </span>
-            </Link>
-            <Link to="#">
-              <span>
-                <AiOutlineShop />
-                Marketplaces
-              </span>
-            </Link>
-          </section>
-          <section>
-            <Link to="/configuracoes">
-              <span>
-                <AiFillSetting />
-                Configurações
-              </span>
-            </Link>
-            <button type="button" onClick={() => {
-              return (
-                setModalPasswordIsOpen(true),
-                setMenuOpen(false)
-              )
-            }}>
-              <span><FaKey /> Mudar senha</span>
+          </div>
+          <div>
+            <Link to="#" className="button_disabled">Dashboard</Link>
+            <Link to="#" className="button_disabled">Pedidos</Link>
+            <Link to="#" className="button_disabled">Produtos</Link>
+            <Link to="#" className="button_disabled">Marketplaces</Link>
+          </div>
+          <div>
+            <button>
+              <IoIosNotifications />
+            </button>
+            <button onClick={() => setDropdown(!dropdown)}>
+              <AiFillSetting />
+
+              <div className="dropdown-menu">
+                <Link to="/configuracoes">Configurações</Link>
+                <button onClick={signOut}>Sair da conta</button>
+              </div>
             </button>
             <button onClick={signOut}>
-              <span>
-                <BsBoxArrowInRight />
-                Sair da conta
-              </span>
+              <BsBoxArrowInRight />
             </button>
-          </section>
-        </MenuContent>
-        <aside onClick={() => setMenuOpen(false)} />
-      </Menu>
-      )}
-      
-      <PasswordModal 
-        handleUpdatePassword={handleUpdatePassword}
-        modalPasswordIsOpen={modalPasswordIsOpen}
-        setModalPasswordIsOpen={setModalPasswordIsOpen}
-        changePasswordError={changePasswordError}
-        changePasswordLoader={changePasswordLoader}
-      />
-    </Container>
+          </div>
+        </Content>
+        {menuOpen && (
+        <Menu>
+          <MenuContent>
+            <header>
+              <img src={Logo2} alt="Logo da KillerBee" />
+              <h2>Killerbee</h2>
+            </header>
+            <section>
+              <Link to="#">
+                <span>
+                  <BsPieChartFill />
+                  Dashboard
+                </span>
+              </Link>
+              <Link to="#">
+                <span>
+                  <FaTicketAlt />
+                  Pedidos
+                </span>
+              </Link>
+              <Link to="#">
+                <span>
+                  <AiOutlineShoppingCart />
+                  Produtos
+                </span>
+              </Link>
+              <Link to="#">
+                <span>
+                  <AiOutlineShop />
+                  Marketplaces
+                </span>
+              </Link>
+            </section>
+            <section>
+              <Link to="/configuracoes">
+                <span>
+                  <AiFillSetting />
+                  Configurações
+                </span>
+              </Link>
+              <button type="button" onClick={() => {
+                return (
+                  setModalPasswordIsOpen(true),
+                  setMenuOpen(false)
+                )
+              }}>
+                <span><FaKey /> Mudar senha</span>
+              </button>
+              <button onClick={signOut}>
+                <span>
+                  <BsBoxArrowInRight />
+                  Sair da conta
+                </span>
+              </button>
+            </section>
+          </MenuContent>
+          <aside onClick={() => setMenuOpen(false)} />
+        </Menu>
+        )}
+        
+        <PasswordModal 
+          handleUpdatePassword={handleUpdatePassword}
+          modalPasswordIsOpen={modalPasswordIsOpen}
+          setModalPasswordIsOpen={setModalPasswordIsOpen}
+          changePasswordError={changePasswordError}
+          changePasswordLoader={changePasswordLoader}
+        />
+      </Container>
+    </>
   )
 }

@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 export const Container = styled.header`
   width: 100%;
@@ -6,7 +6,11 @@ export const Container = styled.header`
   background: var(--purple);
 `;
 
-export const Content = styled.div`
+type ContentProps = {
+  dropdown: boolean;
+}
+
+export const Content = styled.div<ContentProps>`
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -23,12 +27,58 @@ export const Content = styled.div`
       display: flex;
       align-items: center;
       justify-content: center;
+      position: relative;
 
       svg {
         color: var(--full-white);
         width: 20px;
         height: 20px
       }
+
+      .dropdown-menu {
+        display: none;
+        position: absolute;
+        background-color: var(--full-white);
+        min-width: 150px;
+        top: 26px;
+        right: -32px;
+        box-shadow: 0 5px 15px 0 rgba(0, 0, 0, 0.2);
+        z-index: 1;
+        border-radius: 8px;
+
+        button {
+          background: none;
+        }
+        
+        a, button {
+          color: var(--dark-purple);
+          padding: 12px 10px;
+          font-size: 14px;
+          width: 100%;
+          text-align: left;
+          text-decoration: none;
+          display: block;
+          border-radius: 8px;
+
+          font-weight: 500;
+          font-family: 'Inter', sans-serif;
+
+          transition: all 0.2s;
+          &:hover {
+            background-color: #f2f0f9;
+          }
+        }
+
+        button {
+          color: #d30000;
+          border-top: 2px solid #f2f0f9;
+        }
+      }
+      ${props => props.dropdown && css`
+        .dropdown-menu {
+          display: block;
+        }
+      `}
     }
 
     h2 {
