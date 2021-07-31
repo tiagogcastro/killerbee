@@ -65,7 +65,6 @@ export default createGlobalStyle`
       border-radius: 99px;
     }
   }
-
   
   .fieldset {
     border: 2px solid rgba(0, 0, 0, 0.08);
@@ -109,6 +108,12 @@ export default createGlobalStyle`
     span {
       padding: 0 16px 0 18px;
     }
+  }
+
+  #close_dropdown {
+    width: 100%;
+    height: 100vh;
+    position: absolute;
   }
 `
 
