@@ -59,7 +59,6 @@ export function Header() {
             <button onClick={() => setMenuOpen(!menuOpen)}>
               <FiMenu />
             </button>
-            <h2>Killerbee</h2>
           </div>
           <div>
             <Link to="#" className="button_disabled">Dashboard</Link>
@@ -79,7 +78,7 @@ export function Header() {
                 <button onClick={signOut}>Sair da conta</button>
               </div>
             </div>
-            <button onClick={signOut}>
+            <button onClick={signOut} title="Sair da conta">
               <BsBoxArrowInRight />
             </button>
           </div>
@@ -89,7 +88,7 @@ export function Header() {
           <MenuContent>
             <header>
               <img src={Logo2} alt="Logo da KillerBee" />
-              <h2>Killerbee</h2>
+              <h2>KillerBee</h2>
             </header>
             <section>
               <Link to="#">
