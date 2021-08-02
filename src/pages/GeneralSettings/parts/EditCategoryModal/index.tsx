@@ -51,7 +51,12 @@ const EditCategoryModal: React.ForwardRefRenderFunction<ModalHandlesEditCategory
     setEditCategoryLoader(true);
 
     const customData = {
-      default_price: data.default_price.replace(/\D/g, ''),
+      default_price: Number(
+        data.default_price
+        .replace('R$ ', '')
+        .replace('.', '')
+        .replace(',', '.')
+      ),
       category_id: category.category_id,
     };
 

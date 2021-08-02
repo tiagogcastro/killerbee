@@ -81,7 +81,12 @@ const NewCategoryModal: React.ForwardRefRenderFunction<ModalHandlesNewCategory> 
 
     const dataCustom = {
       ...data,
-      default_price: data.default_price.replace(/\D/g, '')
+      default_price: Number(
+        data.default_price
+        .replace('R$ ', '')
+        .replace('.', '')
+        .replace(',', '.')
+      )
     };
     
     api.post('/configuration/categorySettings', dataCustom).then(response => {
