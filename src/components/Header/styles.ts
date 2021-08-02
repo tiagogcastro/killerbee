@@ -111,7 +111,7 @@ export const Menu = styled.div`
   height: 100%;
   position: fixed;
   left: 0;
-  top: 55px;
+  top: 53px;
   z-index: 1000;
 
   display: flex;
