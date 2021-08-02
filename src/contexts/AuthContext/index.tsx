@@ -68,7 +68,7 @@ export function AuthProvider({children}: AuthProviderProps) {
   useEffect(() => {
     const token = localStorage.getItem('@killerbee:token');
 
-    if(!token) {
+    if(!token || !tokenIsValid) {
       signOut();
       return;
     };
@@ -80,7 +80,7 @@ export function AuthProvider({children}: AuthProviderProps) {
       };
     });
     
-  }, [history, signOut]);
+  }, [history, signOut, tokenIsValid]);
 
   return (
     <AuthContext.Provider value={{token: data.token, tokenIsValid: data.tokenIsValid, signinWithEmail, signOut}}>
