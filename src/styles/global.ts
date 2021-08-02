@@ -82,6 +82,10 @@ export default createGlobalStyle`
       .css-1okebmr-indicatorSeparator {
         background: none;
       }
+
+      .css-yk16xz-control {
+        background: transparent;
+      }
     }
     
     div {
