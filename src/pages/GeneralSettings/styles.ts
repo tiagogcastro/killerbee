@@ -213,6 +213,10 @@ export const Categories = styled.div`
         }
       }
     }
+
+    div:last-child {
+      margin-right: 64px;
+    }
   }
 `;
 
