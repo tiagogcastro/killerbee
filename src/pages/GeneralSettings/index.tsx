@@ -96,7 +96,7 @@ export function GeneralSettings() {
       setUserConfiguration(response.data);
     }).catch((error: AxiosError) => {
       if(error.response?.status === 500) {
-        setError(error.response.data.error);
+        setError('Erro interno. Reinicie a página');
         return;
       };
 
@@ -221,25 +221,16 @@ export function GeneralSettings() {
               <Categories>
                 <header>
                   <div>
-                    <LabelInput>
-                      <input type="checkbox"/>
-                      <p className="checkmark"></p>
-                    </LabelInput>
                     <span>Categoria</span>
                   </div>
 
                   <div>
                     <span>Preço padrão</span>
-                    <button type="button"><BsTrashFill /></button>
                   </div>
                 </header>
                 {userCategoriesCustom && userCategoriesCustom.map(categories => (
                   <Category key={categories.category_id}>
                     <div>
-                      <LabelInput>
-                        <input type="checkbox"/>
-                        <p className="checkmark"></p>
-                      </LabelInput>
                       <span>{categories.category_description} <button type="button" onClick={() =>handleButtonDeleteCategoryClick(categories)}><IoMdClose /></button></span>
                     </div>
                     <div>
