@@ -3,7 +3,7 @@ import { AxiosError } from 'axios';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import { AiOutlinePlus } from 'react-icons/ai';
-import { BsArrowLeftShort, BsTrashFill } from 'react-icons/bs';
+import { BsArrowLeftShort } from 'react-icons/bs';
 import {FaEllipsisV} from 'react-icons/fa';
 import {IoMdClose} from 'react-icons/io';
 
@@ -15,8 +15,6 @@ import { api } from '../../services/api';
 
 import LoadingGif from '.././../assets/images/loading.gif';
 import notCategoryImage from '.././../assets/images/notCategory.svg';
-
-import { LabelInput } from '../../styles/global';
 
 import {
   Container,
