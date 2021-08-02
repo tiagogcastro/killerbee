@@ -24,6 +24,12 @@ type CategoryType = {
   description: string;
 };
 
+type CategorySetting = {
+  category_id: number;
+  category_description: string;
+  default_price: number;
+};
+
 export type ErrorType = {
   error_message: string;
   error_status: 'C08';
@@ -44,6 +50,7 @@ const NewCategoryModal: React.ForwardRefRenderFunction<ModalHandlesNewCategory> 
   const [newCategoryError, setNewCategoryError] = useState('');
 
   const [categoryType, setCategoryType] = useState<CategoryType[]>([]);
+  const [categorySettings, setCategorySetting] = useState<CategorySetting[]>([]);
 
   useEffect(() => {
     api.get('/main/category').then(response => {
@@ -53,20 +60,26 @@ const NewCategoryModal: React.ForwardRefRenderFunction<ModalHandlesNewCategory> 
     });
   }, []);
 
-  // useEffect(() => {
-  //   api.get('/configuration').then((response) => {
-  //     setCategorySetting(response.data.categories_settings);
-  //   });
-  // }, [modalOpen]);
+  useEffect(() => {
+    api.get('/configuration').then((response) => {
+      setCategorySetting(response.data.categories_settings);
+    });
+  }, [modalOpen]);
 
   const categoryTypeOptions = useMemo(() => {
-    return categoryType.map(category => {
+    const categoriesSettingsMap = categorySettings.map(item => {
+      return item.category_id
+    });
+
+    const categoriesFinded = categoryType.filter(item => !categoriesSettingsMap.includes(item.id));
+
+    return categoriesFinded.map(category => {
       return {
         value: category.id,
         label: category.description
       };
     });
-  }, [categoryType]);
+  }, [categoryType, categorySettings]);
  
   const handleOpenNewCategoryModal = useCallback(() => {
     setOpenModal(true);
