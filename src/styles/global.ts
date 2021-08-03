@@ -179,3 +179,10 @@ export const LabelInput = styled.label`
     }
   }
 `;
+
+export const Error = styled.span`
+  color: var(--pink);
+  display: block;
+  margin-top: 6px;
+  font-size: 12px;
+`;
