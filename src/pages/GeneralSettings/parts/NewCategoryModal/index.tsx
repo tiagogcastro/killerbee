@@ -47,7 +47,7 @@ const NewCategoryModal: React.ForwardRefRenderFunction<ModalHandlesNewCategory> 
 
   const [modalOpen, setOpenModal] = useState(false);
   const [newCategoryLoader, setNewCategoryLoader] = useState(false);
-  const [newCategoryError, setNewCategoryError] = useState('');
+  const [newCategoryError, setNewCategoryError] = useState({text: '', error: false});
 
   const [categoryType, setCategoryType] = useState<CategoryType[]>([]);
   const [categorySettings, setCategorySetting] = useState<CategorySetting[]>([]);
@@ -105,6 +105,7 @@ const NewCategoryModal: React.ForwardRefRenderFunction<ModalHandlesNewCategory> 
     api.post('/configuration/categorySettings', dataCustom).then(response => {
       setOpenModal(false);
       setStateToReloadConfiguration(!stateToReloadConfiguration);
+      setNewCategoryError({text: '', error: false});
     }).catch((error: AxiosError) => {
       const errorType = {
         C08: 'default_price',
@@ -113,13 +114,12 @@ const NewCategoryModal: React.ForwardRefRenderFunction<ModalHandlesNewCategory> 
       const errorData: ErrorType | undefined = error.response?.data;
 
       if(!data.category_id) {
-        setNewCategoryError('Categoria não informada');
-        return;
+        setNewCategoryError({text: 'Categoria não informada', error: true});
       }
 
-      if(errorData) {
+      if(errorData !== undefined) {
+        setNewCategoryError({text: '', error: false});
         changeFormNewCategoryRef.current?.setFieldError(errorType[(errorData).error_status] || errorType.default , (errorData).error_message);
-        setNewCategoryError('');
       };
     }).finally(() => {
       setNewCategoryLoader(false);
@@ -137,7 +137,7 @@ const NewCategoryModal: React.ForwardRefRenderFunction<ModalHandlesNewCategory> 
     <Modal
       isOpen={modalOpen}
     >
-      <NewCategoryModalTag>
+      <NewCategoryModalTag isError={!!newCategoryError.error}>
         <header>
           <h2>NOVA CATEGORIA</h2>
           <button onClick={handleCloseNewCategoryModal}><AiOutlineClose /></button>
@@ -148,9 +148,9 @@ const NewCategoryModal: React.ForwardRefRenderFunction<ModalHandlesNewCategory> 
             <Select name="category_id"
               options={categoryTypeOptions}
               />
+            {newCategoryError.error && <Error noPadding><p>{newCategoryError.text}</p></Error> }
           </fieldset>
           <Input name="default_price" mask="currency" maskPrefix="R$" maskStyle={true} isFieldset legendText="Valor padrão" type="text"/>
-          {newCategoryError && <Error noPadding><p>{newCategoryError}</p></Error> }
           <footer>
             <Button type="submit">{newCategoryLoader ? <img className="imgLoading" src={LoadingGif} alt="loading" /> : 'SALVAR'}</Button>
             <button type="button" onClick={handleCloseNewCategoryModal} className="buttonCancel">CANCELAR</button>

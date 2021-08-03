@@ -1,6 +1,10 @@
 import styled, { css } from 'styled-components';
 
-export const NewCategoryModalTag = styled.div`
+type NewCategoryProps = {
+  isError: boolean;
+};
+
+export const NewCategoryModalTag = styled.div<NewCategoryProps>`
 background: var(--full-white);
 
 max-width: 380px;
@@ -45,6 +49,16 @@ form {
   width: 100%;
   padding: 0 40px;
   margin-top: 32px;
+  
+  > fieldset {
+    ${props => props.isError && css`
+      border: 2px solid var(--pink);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      align-items: flex-start;
+    `}
+  }
 
   > div {
     width: 100%;
