@@ -171,7 +171,7 @@ export function GeneralSettings() {
         <Form onSubmit={handleUpdateSettings}>
         <main>
           <header>
-            <button onClick={() => history.push('/configuracoes')}>
+            <button type="button" onClick={() => history.push('/configuracoes')}>
               <BsArrowLeftShort />
             </button>
             <strong>Configurações gerais</strong>
