@@ -33,7 +33,7 @@ export const Input = ({ name, legendText, isPassword, isFieldset, errorMessage, 
   const handleInputFocus = useCallback(() => {
     setInputFocus(true);
     clearError();
-  }, []);
+  }, [clearError]);
 
   const handleInputBlur = useCallback(() => {
     setInputFocus(false)

@@ -117,7 +117,7 @@ const NewCategoryModal: React.ForwardRefRenderFunction<ModalHandlesNewCategory> 
         setNewCategoryError({text: 'Categoria não informada', error: true});
       }
 
-      if(errorData !== undefined) {
+      if(errorData) {
         setNewCategoryError({text: '', error: false});
         changeFormNewCategoryRef.current?.setFieldError(errorType[(errorData).error_status] || errorType.default , (errorData).error_message);
       };
