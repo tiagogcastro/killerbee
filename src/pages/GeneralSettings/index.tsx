@@ -30,6 +30,7 @@ import { EditCategoryModalF, ModalHandlesEditCategory } from './parts/EditCatego
 import { ModalHandlesNewCategory , NewCategoryModalF} from './parts/NewCategoryModal';
 import { DeleteCategoryModalF, ModalHandlesDeleteCategory } from './parts/DeleteCategoryModal';
 import { useReloadConfiguration } from '../../contexts/ReloadConfigurationsContext';
+import { useHistory } from 'react-router-dom';
 
 type CategorySetting = {
   category_id: number;
@@ -63,6 +64,7 @@ export type ErrorType = {
 };
 
 export function GeneralSettings() {
+  const history = useHistory();
   const { stateToReloadConfiguration } = useReloadConfiguration();
 
   const [userConfiguration, setUserConfiguration] = useState<UserConfiguration>();
@@ -169,7 +171,9 @@ export function GeneralSettings() {
         <Form onSubmit={handleUpdateSettings}>
         <main>
           <header>
-            <BsArrowLeftShort />
+            <button onClick={() => history.push('/configuracoes')}>
+              <BsArrowLeftShort />
+            </button>
             <strong>Configurações gerais</strong>
           </header>
           <div>

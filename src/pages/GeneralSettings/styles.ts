@@ -38,12 +38,16 @@ export const Content = styled.div`
         align-items: center;
         justify-content: flex-start;
 
-        svg {
-          width: 24px;
-          height: 24px;
-          margin-right: 4px;
-          path {
-            color: var(--white-gray);
+        button {
+          cursor: pointer;
+          background: none;
+          svg {
+            width: 24px;
+            height: 24px;
+            margin-right: 4px;
+            path {
+              color: var(--white-gray);
+            }
           }
         }
 
