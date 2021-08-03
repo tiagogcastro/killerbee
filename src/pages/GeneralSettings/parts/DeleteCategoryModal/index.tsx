@@ -61,11 +61,11 @@ const DeleteCategoryModal: React.ForwardRefRenderFunction<ModalHandlesDeleteCate
   >
     <DeleteCategoryTag>
       <header>
-        <h2>EXCLUIR CATEGORIA</h2>
+        <h2>EXCLUIR PREÇO CATEGORIA</h2>
         <button onClick={() => setIsOpenModal(false)}><AiOutlineClose /></button>
       </header>
       <Form ref={changeFormDeleteCategoryRef} onSubmit={handleDeleteCategory}>
-        <p>A categoria <strong>{category.category_description}</strong> será excluída para sempre e não será possível restaurá-la. Você tem certeza?</p>
+        <p>O preço da categoria <strong>{category.category_description}</strong> será excluída para sempre e não será possível restaurá-la. Você tem certeza?</p>
         <footer>
           <Button type="submit">{deleteCategoryLoader ? <img className="imgLoading" src={LoadingGif} alt="loading" /> : <> <BsCheck /> SIM </>}</Button>
           <button type="button" onClick={() => setIsOpenModal(false)} className="buttonCancel">CANCELAR</button>
