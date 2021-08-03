@@ -1,8 +1,5 @@
-import { AxiosError } from 'axios';
-import { useEffect } from 'react';
 import { Redirect, Route, RouteProps } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { api } from '../services/api';
 
 type RouterCustomProps = RouteProps & {
   isPrivate?: boolean;
