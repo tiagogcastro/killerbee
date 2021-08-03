@@ -128,7 +128,7 @@ export function GeneralSettings() {
     api.get('/configuration').then((response) => {
       setUserConfiguration(response.data);
     }).catch((error: AxiosError) => {
-      if(error) {
+      if(error.response?.status !== 401) {
         api.get('/user/me').then((response) => {
           setUser(response.data);
         });
