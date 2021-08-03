@@ -25,13 +25,14 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement>  {
 
 export const Input = ({ name, legendText, isPassword, isFieldset, errorMessage, type, mask, maskPrefix, maskStyle, ...rest }: InputProps) => {
   const inputRef = useRef<HTMLInputElement>(null);
-  const { fieldName, registerField, error } = useField(name);
+  const { fieldName, registerField, error, clearError } = useField(name);
 
   const [inputFocus, setInputFocus] = useState(false);
   const [passwordVisible, setPasswordVisible] = useState(false);
 
   const handleInputFocus = useCallback(() => {
-    setInputFocus(true)
+    setInputFocus(true);
+    clearError();
   }, []);
 
   const handleInputBlur = useCallback(() => {
@@ -54,7 +55,7 @@ export const Input = ({ name, legendText, isPassword, isFieldset, errorMessage, 
     });
 
   }, [fieldName, registerField]);
-  
+
   const handleKeyUp = useCallback((e: React.FormEvent<HTMLInputElement>) => {
     if(mask === 'cep') {
       cep(e);
@@ -73,6 +74,7 @@ export const Input = ({ name, legendText, isPassword, isFieldset, errorMessage, 
         <legend>{legendText}</legend>
         {maskPrefix && <p>{maskPrefix}</p>}
         <input
+
           onFocus={handleInputFocus}
           onBlur={handleInputBlur}
           name={name}
