@@ -1,4 +1,8 @@
 import { Link } from 'react-router-dom';
+import { useCallback, useRef, useState } from 'react';
+
+import { useAuth } from '../../contexts/AuthContext';
+
 
 import { AiFillSetting, AiOutlineShop, AiOutlineShoppingCart } from 'react-icons/ai';
 import { BsBoxArrowInRight, BsPieChartFill } from 'react-icons/bs';
@@ -6,19 +10,16 @@ import { FaKey, FaTicketAlt } from 'react-icons/fa';
 import {FiMenu} from 'react-icons/fi';
 import { IoIosNotifications } from 'react-icons/io';
 
+import { PasswordModalF, ModalHandlesPassword } from './Parts/PasswordModal';
+
+import Logo2 from '../../assets/images/logo2.png';
+
 import {
   Container,
   Content,
   Menu,
   MenuContent,
 } from './styles';
-import { useCallback, useState } from 'react';
-import { useAuth } from '../../contexts/AuthContext';
-import { PasswordModal } from './Parts/PasswordModal';
-import { AxiosError } from 'axios';
-import { api } from '../../services/api';
-
-import Logo2 from '../../assets/images/logo2.png';
 
 export function Header() {
   const { signOut } = useAuth();
@@ -26,29 +27,11 @@ export function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [dropdown, setDropdown] = useState(false);
 
-  // Partial password modal
-  const [changePasswordError, setChangePassworderror] = useState('');
-  const [changePasswordLoader, setChangePasswordLoader] = useState(false);
-  const [modalPasswordIsOpen, setModalPasswordIsOpen] = useState(false);
+  const modalPasswordHandlesRef = useRef<ModalHandlesPassword>({} as ModalHandlesPassword);
 
-  const handleUpdatePassword = useCallback((data) => {
-    setChangePasswordLoader(true);
-
-    if(data.new_password_confirm.length  < 8 || data.new_password.length < 8)   {
-      setChangePassworderror('Mínimo de 8 digitos para nova senha');
-      setChangePasswordLoader(false);
-      return;
-    } else {
-      api.put('/user/changePassword', data).then(response => {
-        setModalPasswordIsOpen(false);
-        setChangePassworderror('');
-      }).catch((error: AxiosError) => {
-        setChangePassworderror(error.response?.data.error_message);
-      }).finally(() => {
-        setChangePasswordLoader(false);
-      });
-    };
-
+  const handleChangePasswordOpenModal = useCallback(() => {
+    modalPasswordHandlesRef.current?.handleOpenChangePasswordModal();
+    setMenuOpen(false)
   }, []);
 
   return (
@@ -123,12 +106,7 @@ export function Header() {
                   Configurações
                 </span>
               </Link>
-              <button type="button" onClick={() => {
-                return (
-                  setModalPasswordIsOpen(true),
-                  setMenuOpen(false)
-                )
-              }}>
+              <button type="button" onClick={handleChangePasswordOpenModal}>
                 <span><FaKey /> Mudar senha</span>
               </button>
               <button onClick={signOut}>
@@ -143,12 +121,8 @@ export function Header() {
         </Menu>
         )}
         
-        <PasswordModal 
-          handleUpdatePassword={handleUpdatePassword}
-          modalPasswordIsOpen={modalPasswordIsOpen}
-          setModalPasswordIsOpen={setModalPasswordIsOpen}
-          changePasswordError={changePasswordError}
-          changePasswordLoader={changePasswordLoader}
+        <PasswordModalF
+          ref={modalPasswordHandlesRef}
         />
       </Container>
     </>
