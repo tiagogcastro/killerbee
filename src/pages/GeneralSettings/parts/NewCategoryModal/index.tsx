@@ -56,7 +56,7 @@ const NewCategoryModal: React.ForwardRefRenderFunction<ModalHandlesNewCategory> 
     api.get('/main/category').then(response => {
       setCategoryType(response.data);
     }).catch((error: AxiosError) => {
-      console.log(error.response?.data.error);
+      setNewCategoryError(error.response?.data.error);
     });
   }, []);
 
