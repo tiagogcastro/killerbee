@@ -1,5 +1,8 @@
+import { AxiosError } from 'axios';
+import { useEffect } from 'react';
 import { Redirect, Route, RouteProps } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import { api } from '../services/api';
 
 type RouterCustomProps = RouteProps & {
   isPrivate?: boolean;
@@ -7,9 +10,9 @@ type RouterCustomProps = RouteProps & {
 };
 
 export function RouterCustom({isPrivate, isAuthenticated, ...rest}: RouterCustomProps) {
-  const {token, tokenIsValid} = useAuth();
+  const { token, tokenIsValid} = useAuth();
 
-  if(isPrivate && (!token || !tokenIsValid)) {
+  if(isPrivate && !(tokenIsValid || token)) {
     return <Redirect to="/"/>;
   };
 
