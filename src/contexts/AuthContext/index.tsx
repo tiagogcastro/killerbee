@@ -1,4 +1,3 @@
-import axios, { AxiosError } from 'axios';
 import { createContext, ReactNode, useCallback, useContext, useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { api } from '../../services/api';
