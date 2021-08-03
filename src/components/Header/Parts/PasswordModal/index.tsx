@@ -16,6 +16,7 @@ import { Modal } from '../../../Modal';
 import { 
   PasswordModalTag 
 } from './styles';
+import { Error } from '../../../../styles/global';
 
 export type ErrorType = {
   error_message: string;
@@ -32,12 +33,22 @@ const PasswordModal: React.ForwardRefRenderFunction<ModalHandlesPassword> = (pro
 
   // Partial password modal
   const [changePasswordLoader, setChangePasswordLoader] = useState(false);
+  const [isError, setIsError] = useState({text: '', error: false});
   const [modalOpen, setOpenModal] = useState(false);
   
   const handleUpdatePassword = useCallback((data) => {
     setChangePasswordLoader(true);
+    
+    if(!data.new_password || !data.new_password_confirm || !data.current_password) {
+      setIsError({text: 'Preencha todos os campos com pelo menos 1 caracter', error: true});
+      setChangePasswordLoader(false);
+      return;
+    };
+
+    setIsError({text: '', error: false});
     api.put('/user/changePassword', data).then(response => {
       setOpenModal(false);
+      setIsError({text: '', error: false});
     }).catch((error: AxiosError) => {
 
       const errorType = {
@@ -50,6 +61,7 @@ const PasswordModal: React.ForwardRefRenderFunction<ModalHandlesPassword> = (pro
       const errorData: ErrorType | undefined = error.response?.data;
 
       if(errorData !== undefined) {
+        setIsError({text: '', error: false});
         if(errorData.error_status === 'C07') {
           changeFormPasswordRef.current?.setFieldError(errorType[(errorData).error_status] || errorType.default , 'Mínimo de 8 digitos para nova senha');
           return;
@@ -85,6 +97,7 @@ const PasswordModal: React.ForwardRefRenderFunction<ModalHandlesPassword> = (pro
           <Input name="current_password" isFieldset legendText="Senha atual" type="password"/>
           <Input name="new_password" isFieldset legendText="Nova senha" type="password"/>
           <Input name="new_password_confirm" isFieldset legendText="Confirme a nova senha" type="password"/>
+          {isError.error && <Error>{isError.text}</Error>}
           <footer>
             <Button type="submit">{changePasswordLoader ? <img className="imgLoading" src={LoadingGif} alt="loading" /> : 'SALVAR'}</Button>
             <button type="button" onClick={() => setOpenModal(false)} className="buttonCancel">CANCELAR</button>
