@@ -1,3 +1,4 @@
+import axios, { AxiosError } from 'axios';
 import { createContext, ReactNode, useCallback, useContext, useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { api } from '../../services/api';
@@ -32,9 +33,9 @@ export function AuthProvider({children}: AuthProviderProps) {
 
   const [data, setData] = useState<AuthState>(() => {
     const token = localStorage.getItem('@killerbee:token');
+    api.defaults.headers.authorization = `Bearer ${token}`;
 
     if(token) {
-      api.defaults.headers.authorization = `Bearer ${token}`;
       return {
         token,
         tokenIsValid
@@ -44,6 +45,15 @@ export function AuthProvider({children}: AuthProviderProps) {
     return {} as AuthState;
   }); 
 
+  const signOut = useCallback(() => {
+    localStorage.removeItem('@killerbee:token');
+    api.defaults.headers.authorization = ``;
+
+    history.push('/');
+
+    setData({} as AuthState);
+  }, [history]);
+  
   const signinWithEmail = useCallback(async ({username, password}: signinWithEmailCredentials) => {
     const response = await api.post('/authentication', {username, password});
 
@@ -51,19 +61,12 @@ export function AuthProvider({children}: AuthProviderProps) {
 
     api.defaults.headers.authorization = `Bearer ${token}`;
 
+    api.get('/user/valid').then(response => {
+      setTokenIsValid(response.data);
+    });
+
     localStorage.setItem('@killerbee:token', token);
-
-    setData({token, tokenIsValid});
-  }, [tokenIsValid]);
-
-  const signOut = useCallback(() => {
-    localStorage.removeItem('@killerbee:token');
-
-    history.push('/');
-
-    setData({} as AuthState);
-    return {} as AuthState;
-  }, [history]);
+  }, []);
 
   useEffect(() => {
     const token = localStorage.getItem('@killerbee:token');
@@ -71,19 +74,28 @@ export function AuthProvider({children}: AuthProviderProps) {
     if(!token || !tokenIsValid) {
       signOut();
       return;
-    };
+    }
+    
+    api.interceptors.response.use(undefined, (error) => {
+      if(error.response.status === 401 || error.response.data.message === '401 Unauthorized') {
+        window.location.reload();
+        return false;
+      };
+
+      return Promise.reject(error);
+    });
 
     api.get('/user/valid').then(response => {
       setTokenIsValid(response.data);
-      if(response.data === false) {
+      if(response.data && response.data === false) {
         signOut();
       };
     });
-    
+    api.defaults.headers.authorization = `Bearer ${token}`;
   }, [history, signOut, tokenIsValid]);
-
+  
   return (
-    <AuthContext.Provider value={{token: data.token, tokenIsValid: data.tokenIsValid, signinWithEmail, signOut}}>
+    <AuthContext.Provider value={{token: data.token, signinWithEmail, tokenIsValid, signOut}}>
       {children}
     </AuthContext.Provider>
   );
