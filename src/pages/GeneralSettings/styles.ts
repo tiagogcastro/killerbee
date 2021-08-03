@@ -26,6 +26,7 @@ export const Content = styled.div`
       flex-direction: column;
 
       border: 1px solid var(--white-gray);
+      background: var(--full-white);
       border-radius: 4px;
 
       > header {

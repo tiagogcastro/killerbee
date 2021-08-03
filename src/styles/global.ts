@@ -83,8 +83,11 @@ export default createGlobalStyle`
         background: none;
       }
 
+      .css-2b097c-container {
+        background: var(--full-white);
+      }
       .css-yk16xz-control {
-        background: transparent;
+        background: var(--full-white);
       }
     }
     
