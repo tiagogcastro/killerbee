@@ -166,129 +166,133 @@ export function GeneralSettings() {
 
   return (
     <Container>
-      <Header />
-      <Content>
-        <Form onSubmit={handleUpdateSettings}>
-        <main>
-          <header>
-            <button type="button" onClick={() => history.push('/configuracoes')}>
-              <BsArrowLeftShort />
-            </button>
-            <strong>Configurações gerais</strong>
-          </header>
-          <div>
-            <section>
-              <fieldset>
-                <legend>Email</legend>
-                <span>{userConfiguration?.username || user.username}</span>
-              </fieldset>
-              
-              <div>
-                <Input name="brand_name" defaultValue={userConfiguration?.brand_name} isFieldset legendText="Nome da marca" type="text"/>
-                <fieldset className="fieldset">
-                <legend>Produção</legend>
-                {!userConfiguration?.production_type ? (
-                  <>
-                  <Select name="production_type"
-                    options={productionTypeOptions}
-                  />
-                  </>
-                ): (
-                  <Select name="production_type"
-                    defaultValue={{
-                      value: userConfiguration.production_type.id, label: userConfiguration.production_type.description
-                    }}
-                    options={productionTypeOptions}
-                  />
-                )}
-              </fieldset>
-              </div>
-            </section>
-          </div>
-          <Error>
-            <p>{error}</p>
-          </Error>
-          
-            <section>
-              <header>
-                <h1>Lista de categorias</h1>
-                {userConfiguration && <Button type="button" onClick={handleOpenNewCategoryModal}><AiOutlinePlus /> NOVA</Button>}
-              </header>
-              {!userConfiguration ? (
-                <NotUserConfiguration>
-                  <p>Conclua seus dados para poder cadastrar categorias</p>
-                  <img src={notCategoryImage} alt="Sem categorias" />
-                </NotUserConfiguration>
-              ) : (
-              <Categories>
+      {!userConfiguration ? (<img className="imgLoading" src={LoadingGif} alt="loading" />) : (
+      <>
+        <Header />
+        <Content>
+          <Form onSubmit={handleUpdateSettings}>
+          <main>
+            <header>
+              <button type="button" onClick={() => history.push('/configuracoes')}>
+                <BsArrowLeftShort />
+              </button>
+              <strong>Configurações gerais</strong>
+            </header>
+            <div>
+              <section>
+                <fieldset>
+                  <legend>Email</legend>
+                  <span>{userConfiguration?.username || user.username}</span>
+                </fieldset>
+                
+                <div>
+                  <Input name="brand_name" defaultValue={userConfiguration?.brand_name} isFieldset legendText="Nome da marca" type="text"/>
+                  <fieldset className="fieldset">
+                  <legend>Produção</legend>
+                  {!userConfiguration?.production_type ? (
+                    <>
+                    <Select name="production_type"
+                      options={productionTypeOptions}
+                    />
+                    </>
+                  ): (
+                    <Select name="production_type"
+                      defaultValue={{
+                        value: userConfiguration.production_type.id, label: userConfiguration.production_type.description
+                      }}
+                      options={productionTypeOptions}
+                    />
+                  )}
+                </fieldset>
+                </div>
+              </section>
+            </div>
+            <Error>
+              <p>{error}</p>
+            </Error>
+            
+              <section>
                 <header>
-                  <div>
-                    <span>Categoria</span>
-                  </div>
-
-                  <div>
-                    <span>Preço padrão</span>
-                  </div>
+                  <h1>Lista de categorias</h1>
+                  {userConfiguration && <Button type="button" onClick={handleOpenNewCategoryModal}><AiOutlinePlus /> NOVA</Button>}
                 </header>
-                {userCategoriesCustom && userCategoriesCustom.map(categories => (
-                  <Category key={categories.category_id}>
+                {!userConfiguration ? (
+                  <NotUserConfiguration>
+                    <p>Conclua seus dados para poder cadastrar categorias</p>
+                    <img src={notCategoryImage} alt="Sem categorias" />
+                  </NotUserConfiguration>
+                ) : (
+                <Categories>
+                  <header>
                     <div>
-                      <span>{categories.category_description} <button type="button" onClick={() =>handleButtonDeleteCategoryClick(categories)}><IoMdClose /></button></span>
+                      <span>Categoria</span>
                     </div>
+
                     <div>
-                      <span className="spanPrice">{categories.default_price}</span>
-                      <button type="button" onClick={() => {
-                        return (
-                          setEllipsisMiniModalIsOpen(!ellipsisMiniModalIsOpen),
-                          setCategoryId(categories.category_id)
-                        )
-                      }}>
-                        <FaEllipsisV />
-                      </button>
-                      {ellipsisMiniModalIsOpen && categoryId === categories.category_id && (
-                      <CategoryMiniModal>
-                        <i>
+                      <span>Preço padrão</span>
+                    </div>
+                  </header>
+                  {userCategoriesCustom && userCategoriesCustom.map(categories => (
+                    <Category key={categories.category_id}>
+                      <div>
+                        <span>{categories.category_description} <button type="button" onClick={() =>handleButtonDeleteCategoryClick(categories)}><IoMdClose /></button></span>
+                      </div>
+                      <div>
+                        <span className="spanPrice">{categories.default_price}</span>
+                        <button type="button" onClick={() => {
+                          return (
+                            setEllipsisMiniModalIsOpen(!ellipsisMiniModalIsOpen),
+                            setCategoryId(categories.category_id)
+                          )
+                        }}>
+                          <FaEllipsisV />
+                        </button>
+                        {ellipsisMiniModalIsOpen && categoryId === categories.category_id && (
+                        <CategoryMiniModal>
+                          <i>
+                            <button 
+                              type="button" 
+                              onClick={() => setEllipsisMiniModalIsOpen(false)}>
+                                <IoMdClose />
+                            </button>
+                          </i>
+                          <button type="button" onClick={() => handleButtonEditCategoryClick(categories)}>Editar</button>
+                          <p></p>
                           <button 
                             type="button" 
-                            onClick={() => setEllipsisMiniModalIsOpen(false)}>
-                              <IoMdClose />
+                            className="delete" 
+                            onClick={() =>handleButtonDeleteCategoryClick(categories)}>
+                            Excluir
                           </button>
-                        </i>
-                        <button type="button" onClick={() => handleButtonEditCategoryClick(categories)}>Editar</button>
-                        <p></p>
-                        <button 
-                          type="button" 
-                          className="delete" 
-                          onClick={() =>handleButtonDeleteCategoryClick(categories)}>
-                          Excluir
-                        </button>
-                      </CategoryMiniModal>
-                      )}
-                    </div>
-                  </Category>         
-                ))}  
-              </Categories>
-            )}
-          </section>
-        </main>
-        <div>
-          <Button type="submit">{updateSettingsLoader ? <img className="imgLoading" src={LoadingGif} alt="loading" /> : 'SALVAR'}</Button>
-          <button type="button" className="buttonCancel">CANCELAR</button>
-        </div>
-        </Form>
+                        </CategoryMiniModal>
+                        )}
+                      </div>
+                    </Category>         
+                  ))}  
+                </Categories>
+              )}
+            </section>
+          </main>
+          <div>
+            <Button type="submit">{updateSettingsLoader ? <img className="imgLoading" src={LoadingGif} alt="loading" /> : 'SALVAR'}</Button>
+            <button type="button" className="buttonCancel">CANCELAR</button>
+          </div>
+          </Form>
 
-        <NewCategoryModalF
-          ref={newCategoryModalRef}
-        />
+          <NewCategoryModalF
+            ref={newCategoryModalRef}
+          />
 
-        <DeleteCategoryModalF 
-          ref={deleteModalRef}
-        />
+          <DeleteCategoryModalF 
+            ref={deleteModalRef}
+          />
 
-        <EditCategoryModalF
-          ref={editModalRef}
-        />
-      </Content>
+          <EditCategoryModalF
+            ref={editModalRef}
+          />
+        </Content>
+      </>
+      )}
     </Container>
   );
 } 
