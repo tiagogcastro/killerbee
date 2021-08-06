@@ -8,6 +8,13 @@ export const Container = styled.div`
   align-items: center;
   justify-content: flex-start;
   flex-direction: column;
+
+  > img.imgLoading {
+    width: 48px;
+    margin: auto;
+    height: 48px;
+  }
+
 `;
 
 export const Content = styled.div`
