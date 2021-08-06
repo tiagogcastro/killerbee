@@ -1,3 +1,4 @@
+import { AxiosError } from 'axios';
 import { createContext, ReactNode, useCallback, useContext, useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { api } from '../../services/api';
@@ -75,8 +76,16 @@ export function AuthProvider({children}: AuthProviderProps) {
       return;
     }
     
-    api.interceptors.response.use(undefined, (error) => {
-      if(error.response.status === 401 || error.response.data.message === '401 Unauthorized') {
+    api.interceptors.response.use(undefined, (error: AxiosError) => {
+      if(error.response?.status !== 200 && (error.response?.statusText === 'xhr' || 'preflight')) {
+        window.location.reload();
+        // signOut();
+        return false;
+      };
+    });
+    
+    api.interceptors.response.use(undefined, (error: AxiosError) => {
+      if(error.response?.status === 401 || error.response?.data.message === '401 Unauthorized') {
         window.location.reload();
         return false;
       };
