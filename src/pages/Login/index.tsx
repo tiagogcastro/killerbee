@@ -5,7 +5,7 @@ import { AxiosError } from 'axios';
 
 import { useAuth } from '../../contexts/AuthContext';
 
-import { LabelInput } from '../../styles/global';
+import { Error, LabelInput } from '../../styles/global';
 
 import { Input } from '../../components/Input';
 
@@ -61,6 +61,11 @@ export function Login() {
 
         const errorData: ErrorType | undefined = error.response?.data;
 
+        if(error.response?.status !== 200 && (error.response?.statusText === 'xhr' || 'preflight')) {
+          setError('Serviço indisponível no momento. Atualize a página e tente novamente');
+          return;
+        };
+
         if(errorData) {
           loginFormRef.current?.setFieldError(errorType[(errorData).error_status] || errorType.default , (errorData).error_message);
           setError('');
@@ -81,7 +86,7 @@ export function Login() {
             type="email"
           />
           <Input name="password" isPassword placeholder="Senha" legendText="Senha" type="password"/>
-          {error && <p className="error">{error}</p>}
+          {error && <Error>{error}</Error>}
           <footer>
             <div>
               <LabelInput>
