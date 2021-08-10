@@ -77,7 +77,7 @@ export function AuthProvider({children}: AuthProviderProps) {
     }
     
     api.interceptors.response.use(undefined, (error: AxiosError) => {
-      if(error.response?.status !== 200 && (error.response?.statusText === 'xhr' || 'preflight')) {
+      if(!error.response?.status && (error.response?.statusText === 'xhr' || 'preflight')) {
         window.location.reload();
         // signOut();
         return false;

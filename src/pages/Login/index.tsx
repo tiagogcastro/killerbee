@@ -60,16 +60,18 @@ export function Login() {
         };
 
         const errorData: ErrorType | undefined = error.response?.data;
+      
+        if(errorData) {
+          loginFormRef.current?.setFieldError(errorType[(errorData).error_status] || errorType.default , (errorData).error_message);
+          setError('');
+          return;
+        };
 
-        if(error.response?.status !== 200 && (error.response?.statusText === 'xhr' || 'preflight')) {
+        if(!error.response?.status && (error.response?.statusText === 'xhr' || 'preflight')) {
           setError('Serviço indisponível no momento. Atualize a página e tente novamente');
           return;
         };
 
-        if(errorData) {
-          loginFormRef.current?.setFieldError(errorType[(errorData).error_status] || errorType.default , (errorData).error_message);
-          setError('');
-        };
       });
     }
   }, [signinWithEmail, history]);
