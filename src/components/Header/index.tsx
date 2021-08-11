@@ -12,7 +12,7 @@ import { IoIosNotifications } from 'react-icons/io';
 
 import { PasswordModalF, ModalHandlesPassword } from './Parts/PasswordModal';
 
-import Logo2 from '../../assets/images/logo2.png';
+import Logo2 from '../../assets/images/logo2.webp';
 
 import {
   Container,
@@ -92,7 +92,7 @@ export function Header() {
                   Produtos
                 </span>
               </Link>
-              <Link to="#">
+              <Link to="/marketplaces">
                 <span>
                   <AiOutlineShop />
                   Marketplaces

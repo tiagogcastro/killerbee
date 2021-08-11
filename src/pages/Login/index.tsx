@@ -14,7 +14,7 @@ import {
   Content,
 } from './styles';
 
-import logoAnimated from '../../assets/images/logoAnimated.gif';
+import logoAnimated from '../../assets/images/logoAnimated.webp';
 import LoadingGif from '.././../assets/images/loading.gif';
 
 export type ErrorType = {
